@@ -407,7 +407,7 @@ $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Su
         <a href="exams.php" class="s-link"><span class="s-ico"></span> Exams</a>
         <a href="classes.php" class="s-link active"><span class="s-ico"></span> Classes</a>
         <a href="vacations.php" class="s-link"><span class="s-ico"></span> Vacations</a>
-        <a href="focus-timer.php" class="s-link"><span class="s-ico">⏱</span> Focus Timer</a>
+        <a href="focus-timer.php" class="s-link"><span class="s-ico"></span> Focus Timer</a>
     </nav>
    <div class="sidebar-bottom">
         

@@ -368,14 +368,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <a href="exams.php" class="s-link"><span class="s-ico"></span> Exams</a>
         <a href="classes.php" class="s-link"><span class="s-ico"></span> Classes</a>
         <a href="vacations.php" class="s-link"><span class="s-ico"></span> Vacations</a>
-        <a href="focus-timer.php" class="s-link"><span class="s-ico">⏱</span> Focus Timer</a>
+        <a href="focus-timer.php" class="s-link"><span class="s-ico"></span> Focus Timer</a>
     </nav>
     <div class="sidebar-bottom">
-        <a href="#" class="premium-btn"> Try Premium Free</a>
-        <a href="add-task.php" class="add-new-btn">+ Add New</a>
-        <a href="#" class="dark-mode-link"> Dark Mode</a>
-        <a href="#" class="dark-mode-link"> Help Center</a>
-        <a href="#" class="dark-mode-link"> Calendar Sync</a>
         <a href="logout.php" class="logout-link"> Déconnexion</a>
     </div>
 </aside>

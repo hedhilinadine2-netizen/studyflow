@@ -454,7 +454,7 @@ foreach ($tasks as $task) {
         <a href="activities.php" class="s-link"><span class="s-ico"></span> Activities</a>
         <a href="tasks.php" class="s-link active"><span class="s-ico"></span> Tasks</a>
         <a href="exams.php" class="s-link"><span class="s-ico"></span> Exams</a>
-        <a href="#" class="s-link"><span class="s-ico">⏱</span> Focus Timer</a>
+        <a href="#" class="s-link"><span class="s-ico"></span> Focus Timer</a>
     </nav>
     <div class="sidebar-bottom">
         <a href="#" class="premium-btn"> Try Premium Free</a>

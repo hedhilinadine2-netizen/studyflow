@@ -420,7 +420,7 @@ requireLogin();
         <a href="exams.php" class="s-link"><span class="s-ico"></span> Exams</a>
         <a href="classes.php" class="s-link"><span class="s-ico"></span> Classes</a>
         <a href="vacations.php" class="s-link"><span class="s-ico"></span> Vacations</a>
-        <a href="focus-timer.php" class="s-link active"><span class="s-ico">⏱</span> Focus Timer</a>
+        <a href="focus-timer.php" class="s-link active"><span class="s-ico"></span> Focus Timer</a>
         <div class="sidebar-bottom">
         
         <a href="logout.php" class="logout-link"> Déconnexion</a>
