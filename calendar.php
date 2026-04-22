@@ -277,21 +277,21 @@ requireLogin();
 
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
-        <div class="brand-icon">📚</div>
+        <div class="brand-icon">SF</div>
         <div class="brand-name">StudyFlow</div>
     </div>
     <nav class="sidebar-menu">
-        <a href="dashboard.php" class="s-link"><span class="s-ico">🏠</span> Dashboard</a>
-        <a href="calendar.php" class="s-link active"><span class="s-ico">📅</span> Calendar</a>
-        <a href="tasks.php" class="s-link"><span class="s-ico">✅</span> Tasks</a>
-        <a href="exams.php" class="s-link"><span class="s-ico">📖</span> Exams</a>
-        <a href="classes.php" class="s-link"><span class="s-ico">📚</span> Classes</a>
-        <a href="vacations.php" class="s-link"><span class="s-ico">🌴</span> Vacations</a>
-        <a href="focus-timer.php" class="s-link"><span class="s-ico">⏱️</span> Focus Timer</a>
+        <a href="dashboard.php" class="s-link"><span class="s-ico"></span> Dashboard</a>
+        <a href="calendar.php" class="s-link active"><span class="s-ico"></span> Calendar</a>
+        <a href="tasks.php" class="s-link"><span class="s-ico"></span> Tasks</a>
+        <a href="exams.php" class="s-link"><span class="s-ico"></span> Exams</a>
+        <a href="classes.php" class="s-link"><span class="s-ico"></span> Classes</a>
+        <a href="vacations.php" class="s-link"><span class="s-ico"></span> Vacations</a>
+        <a href="focus-timer.php" class="s-link"><span class="s-ico">⏱</span> Focus Timer</a>
     </nav>
     <div class="sidebar-bottom">
         
-        <a href="logout.php" class="logout-link">🚪 Déconnexion</a>
+        <a href="logout.php" class="logout-link"> Déconnexion</a>
     </div>
 </aside>
 
@@ -307,14 +307,14 @@ requireLogin();
         </div>
     </header>
 
-    <h1 class="page-title">📅 Calendar</h1>
+    <h1 class="page-title"> Calendar</h1>
 
     <div class="calendar-container">
         <div class="calendar-header">
             <div class="month-nav">
-                <button onclick="changeMonth(-1)">← Prev</button>
+                <button onclick="changeMonth(-1)"> Prev</button>
                 <button onclick="goToday()">Today</button>
-                <button onclick="changeMonth(1)">Next →</button>
+                <button onclick="changeMonth(1)">Next </button>
             </div>
             <div class="month-title" id="monthTitle">March 2026</div>
         </div>

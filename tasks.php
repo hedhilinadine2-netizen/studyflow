@@ -385,21 +385,21 @@ foreach ($tasks as $task) {
 
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
-        <div class="brand-icon">📚</div>
+        <div class="brand-icon">SF</div>
         <div class="brand-name">StudyFlow</div>
     </div>
     <nav class="sidebar-menu">
-        <a href="dashboard.php" class="s-link"><span class="s-ico">🏠</span> Dashboard</a>
-        <a href="calendar.php" class="s-link"><span class="s-ico">📅</span> Calendar</a>
-        <a href="tasks.php" class="s-link active"><span class="s-ico">✅</span> Tasks</a>
-        <a href="exams.php" class="s-link"><span class="s-ico">📖</span> Exams</a>
-        <a href="classes.php" class="s-link"><span class="s-ico">📚</span> Classes</a>
-        <a href="vacations.php" class="s-link"><span class="s-ico">🌴</span> Vacations</a>
-        <a href="focus-timer.php" class="s-link"><span class="s-ico">⏱️</span> Focus Timer</a>
+        <a href="dashboard.php" class="s-link"><span class="s-ico"></span> Dashboard</a>
+        <a href="calendar.php" class="s-link"><span class="s-ico"></span> Calendar</a>
+        <a href="tasks.php" class="s-link active"><span class="s-ico"></span> Tasks</a>
+        <a href="exams.php" class="s-link"><span class="s-ico"></span> Exams</a>
+        <a href="classes.php" class="s-link"><span class="s-ico"></span> Classes</a>
+        <a href="vacations.php" class="s-link"><span class="s-ico"></span> Vacations</a>
+        <a href="focus-timer.php" class="s-link"><span class="s-ico">⏱</span> Focus Timer</a>
     </nav>
    <div class="sidebar-bottom">
         
-        <a href="logout.php" class="logout-link">🚪 Déconnexion</a>
+        <a href="logout.php" class="logout-link"> Déconnexion</a>
     </div>
 </aside>
 
@@ -415,7 +415,7 @@ foreach ($tasks as $task) {
         </div>
     </header>
 
-    <h1 class="page-title">✅ Tasks</h1>
+    <h1 class="page-title"> Tasks</h1>
 
     <div class="filter-tabs">
         <div class="filter-tab active" onclick="filterTasks('current')">Current</div>
@@ -423,7 +423,7 @@ foreach ($tasks as $task) {
     </div>
 
     <div class="subject-selector">
-        <label>📚 Select Subject:</label>
+        <label> Select Subject:</label>
         <select id="subjectFilter" onchange="filterTasks(currentFilter)">
             <option value="all">All Subjects</option>
             <option value="Mathematics">Mathematics</option>
@@ -479,7 +479,7 @@ foreach ($tasks as $task) {
         if (filteredTasks.length === 0) {
             container.innerHTML = `
                 <div class="empty-state">
-                    <div class="empty-ico">📭</div>
+                    <div class="empty-ico"></div>
                     <p>No tasks found</p>
                     <a href="add-task.php" style="color:#667eea; text-decoration:none;">+ Add a task</a>
                 </div>
@@ -492,20 +492,20 @@ foreach ($tasks as $task) {
             return `
             <div class="task-item" data-id="${task.id}">
                 <div class="task-check ${task.status === 'done' ? 'completed' : ''}" onclick="toggleStatus(${task.id})">
-                    ${task.status === 'done' ? '✓' : ''}
+                    ${task.status === 'done' ? '' : ''}
                 </div>
                 <div class="task-info">
                     <div class="task-title ${task.status === 'done' ? 'completed' : ''}">${escapeHtml(task.title)}</div>
                     <div class="task-meta">
-                        <span>📅 ${formatDate(task.due_date)}</span>
-                        <span>📚 ${escapeHtml(task.subject) || 'General'}</span>
-                        ${overdue ? '<span class="badge badge-overdue">⚠️ Overdue</span>' : ''}
-                        ${task.status !== 'done' ? '<span class="badge">Pending</span>' : '<span class="badge">Completed ✓</span>'}
+                        <span> ${formatDate(task.due_date)}</span>
+                        <span> ${escapeHtml(task.subject) || 'General'}</span>
+                        ${overdue ? '<span class="badge badge-overdue"> Overdue</span>' : ''}
+                        ${task.status !== 'done' ? '<span class="badge">Pending</span>' : '<span class="badge">Completed </span>'}
                     </div>
                 </div>
                 <div class="task-actions">
-                    <button onclick="editTask(${task.id})" title="Edit">✏️</button>
-                    <button onclick="deleteTask(${task.id})" title="Delete">🗑️</button>
+                    <button onclick="editTask(${task.id})" title="Edit"></button>
+                    <button onclick="deleteTask(${task.id})" title="Delete"></button>
                 </div>
             </div>
             `;

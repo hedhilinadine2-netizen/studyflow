@@ -356,25 +356,25 @@ if ($remainingTasks < 0) $remainingTasks = 0;
 
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
-        <div class="brand-icon">📚</div>
+        <div class="brand-icon"></div>
         <div class="brand-name">StudyFlow</div>
     </div>
     <nav class="sidebar-menu">
-        <a href="dashboard.php" class="s-link"><span class="s-ico">🏠</span> Dashboard</a>
-        <a href="calendar.php" class="s-link"><span class="s-ico">📅</span> Calendar</a>
-        <a href="tasks.php" class="s-link"><span class="s-ico">✅</span> Tasks</a>
-        <a href="exams.php" class="s-link"><span class="s-ico">📖</span> Exams</a>
-        <a href="classes.php" class="s-link"><span class="s-ico">📚</span> Classes</a>
-        <a href="vacations.php" class="s-link"><span class="s-ico">🌴</span> Vacations</a>
-        <a href="focus-timer.php" class="s-link"><span class="s-ico">⏱️</span> Focus Timer</a>
+        <a href="dashboard.php" class="s-link"><span class="s-ico"></span> Dashboard</a>
+        <a href="calendar.php" class="s-link"><span class="s-ico"></span> Calendar</a>
+        <a href="tasks.php" class="s-link"><span class="s-ico"></span> Tasks</a>
+        <a href="exams.php" class="s-link"><span class="s-ico"></span> Exams</a>
+        <a href="classes.php" class="s-link"><span class="s-ico"></span> Classes</a>
+        <a href="vacations.php" class="s-link"><span class="s-ico"></span> Vacations</a>
+        <a href="focus-timer.php" class="s-link"><span class="s-ico">⏱</span> Focus Timer</a>
     </nav>
     <div class="sidebar-bottom">
-        <a href="#" class="premium-btn">✨ Try Premium Free</a>
+        <a href="#" class="premium-btn"> Try Premium Free</a>
         <a href="add-task.php" class="add-new-btn">+ Add New</a>
-        <a href="#" class="dark-mode-link">🌙 Dark Mode</a>
-        <a href="#" class="dark-mode-link">❓ Help Center</a>
-        <a href="#" class="dark-mode-link">📅 Calendar Sync</a>
-        <a href="logout.php" class="logout-link">🚪 Déconnexion</a>
+        <a href="#" class="dark-mode-link"> Dark Mode</a>
+        <a href="#" class="dark-mode-link"> Help Center</a>
+        <a href="#" class="dark-mode-link"> Calendar Sync</a>
+        <a href="logout.php" class="logout-link"> Déconnexion</a>
     </div>
 </aside>
 
@@ -391,10 +391,10 @@ if ($remainingTasks < 0) $remainingTasks = 0;
     </header>
 
     <div class="form-container">
-        <h1 class="form-title">➕ Add New Task</h1>
+        <h1 class="form-title"> Add New Task</h1>
         
         <div class="remaining-tasks">
-            📊 <?php echo $remainingTasks; ?> free tasks remaining
+             <?php echo $remainingTasks; ?> free tasks remaining
         </div>
 
         <?php if ($error): ?>
@@ -415,13 +415,13 @@ if ($remainingTasks < 0) $remainingTasks = 0;
                     <label>Subject <span class="required">*</span></label>
                     <select name="subject" required>
                         <option value="">Select subject</option>
-                        <option value="Mathematics">📐 Mathematics</option>
-                        <option value="Physics">⚡ Physics</option>
-                        <option value="PHP">🐘 PHP</option>
-                        <option value="Web Development">🌐 Web Development</option>
-                        <option value="Database">🗄️ Database</option>
-                        <option value="English">📖 English</option>
-                        <option value="Other">📌 Other</option>
+                        <option value="Mathematics"> Mathematics</option>
+                        <option value="Physics"> Physics</option>
+                        <option value="PHP"> PHP</option>
+                        <option value="Web Development"> Web Development</option>
+                        <option value="Database"> Database</option>
+                        <option value="English"> English</option>
+                        <option value="Other"> Other</option>
                     </select>
                 </div>
             </div>
@@ -446,11 +446,11 @@ if ($remainingTasks < 0) $remainingTasks = 0;
                 <div class="form-group">
                     <label>Task Type</label>
                     <select name="task_type">
-                        <option value="Task">📋 Task</option>
-                        <option value="Exam">📖 Exam</option>
-                        <option value="Homework">📝 Homework</option>
-                        <option value="Project">🚀 Project</option>
-                        <option value="Study">📚 Study</option>
+                        <option value="Task"> Task</option>
+                        <option value="Exam"> Exam</option>
+                        <option value="Homework"> Homework</option>
+                        <option value="Project"> Project</option>
+                        <option value="Study"> Study</option>
                     </select>
                 </div>
                 <div class="form-group">

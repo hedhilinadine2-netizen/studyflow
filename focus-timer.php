@@ -410,25 +410,25 @@ requireLogin();
 
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
-        <div class="brand-icon">📚</div>
+        <div class="brand-icon">SF</div>
         <div class="brand-name">StudyFlow</div>
     </div>
     <nav class="sidebar-menu">
-        <a href="dashboard.php" class="s-link"><span class="s-ico">🏠</span> Dashboard</a>
-        <a href="calendar.php" class="s-link"><span class="s-ico">📅</span> Calendar</a>
-        <a href="tasks.php" class="s-link"><span class="s-ico">✅</span> Tasks</a>
-        <a href="exams.php" class="s-link"><span class="s-ico">📖</span> Exams</a>
-        <a href="classes.php" class="s-link"><span class="s-ico">📚</span> Classes</a>
-        <a href="vacations.php" class="s-link"><span class="s-ico">🌴</span> Vacations</a>
-        <a href="focus-timer.php" class="s-link active"><span class="s-ico">⏱️</span> Focus Timer</a>
+        <a href="dashboard.php" class="s-link"><span class="s-ico"></span> Dashboard</a>
+        <a href="calendar.php" class="s-link"><span class="s-ico"></span> Calendar</a>
+        <a href="tasks.php" class="s-link"><span class="s-ico"></span> Tasks</a>
+        <a href="exams.php" class="s-link"><span class="s-ico"></span> Exams</a>
+        <a href="classes.php" class="s-link"><span class="s-ico"></span> Classes</a>
+        <a href="vacations.php" class="s-link"><span class="s-ico"></span> Vacations</a>
+        <a href="focus-timer.php" class="s-link active"><span class="s-ico">⏱</span> Focus Timer</a>
         <div class="sidebar-bottom">
         
-        <a href="logout.php" class="logout-link">🚪 Déconnexion</a>
+        <a href="logout.php" class="logout-link"> Déconnexion</a>
     </div>
     </nav>
    <div class="sidebar-bottom">
         
-        <a href="logout.php" class="logout-link">🚪 Déconnexion</a>
+        <a href="logout.php" class="logout-link"> Déconnexion</a>
     </div>
 </aside>
 
@@ -456,13 +456,13 @@ requireLogin();
             </div>
 
             <div class="motivation-text">
-                <h2>You've got this. 🎯</h2>
+                <h2>You've got this. </h2>
                 <p>Focused work makes you up to five times more productive.</p>
             </div>
 
             <div class="checklist-section">
                 <div class="checklist-header">
-                    <h3>📋 Checklist</h3>
+                    <h3> Checklist</h3>
                     <button class="add-list-btn" onclick="showAddInput()">+ Add List</button>
                 </div>
                 <div id="checklistItems"></div>
@@ -499,7 +499,7 @@ requireLogin();
             } else {
                 clearInterval(timerInterval);
                 isRunning = false;
-                alert('🎉 Time is up! Great job!');
+                alert(' Time is up! Great job!');
                 timeLeft = 25 * 60;
                 updateDisplay();
             }
@@ -527,10 +527,10 @@ requireLogin();
         container.innerHTML = tasks.map((task, index) => `
             <div class="checklist-item">
                 <div class="checklist-check ${task.completed ? 'completed' : ''}" onclick="toggleTask(${index})">
-                    ${task.completed ? '✓' : ''}
+                    ${task.completed ? '' : ''}
                 </div>
                 <div class="checklist-text ${task.completed ? 'completed' : ''}">${escapeHtml(task.text)}</div>
-                <button class="delete-item" onclick="deleteTask(${index})">🗑️</button>
+                <button class="delete-item" onclick="deleteTask(${index})"></button>
             </div>
         `).join('');
     }

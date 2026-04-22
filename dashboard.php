@@ -1,7 +1,9 @@
 <?php
-require_once 'includes/config.php';
+require_once __DIR__ . '/includes/config.php';
 requireLogin();
 
+$user_name = $_SESSION['user_nom'] ?? 'Utilisateur';
+$user_email = $_SESSION['user_email'] ?? '';
 $tasks = getUserTasks($_SESSION['user_id']);
 
 // Statistiques
@@ -85,6 +87,14 @@ $recent_tasks = array_slice(array_reverse($tasks), 0, 5);
             justify-content: center;
             font-size: 18px;
             color: white;
+            overflow: hidden;
+        }
+
+        .brand-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
         }
 
         .brand-name {
@@ -435,34 +445,34 @@ $recent_tasks = array_slice(array_reverse($tasks), 0, 5);
 <!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
-        <div class="brand-icon">📚</div>
+        <div class="brand-icon">SF</div>
         <div class="brand-name">StudyFlow</div>
     </div>
     <nav class="sidebar-menu">
         <a href="dashboard.php" class="s-link active">
-            <span class="s-ico">🏠</span> Dashboard
+            <span class="s-ico"></span> Dashboard
         </a>
         <a href="calendar.php" class="s-link">
-            <span class="s-ico">📅</span> Calendar
+            <span class="s-ico"></span> Calendar
         </a>
         <a href="tasks.php" class="s-link">
-            <span class="s-ico">✅</span> Tasks
+            <span class="s-ico"></span> Tasks
         </a>
         <a href="exams.php" class="s-link">
-            <span class="s-ico">📖</span> Exams
+            <span class="s-ico"></span> Exams
         </a>
         <a href="classes.php" class="s-link">
-            <span class="s-ico">📚</span> Classes
+            <span class="s-ico"></span> Classes
         </a>
         <a href="vacations.php" class="s-link">
-            <span class="s-ico">🌴</span> Vacations
+            <span class="s-ico"></span> Vacations
         </a>
         <a href="focus-timer.php" class="s-link">
-            <span class="s-ico">⏱️</span> Focus Timer
+            <span class="s-ico"></span> Focus Timer
         </a>
         <div class="sidebar-bottom">
         
-        <a href="logout.php" class="logout-link">🚪 Déconnexion</a>
+        <a href="logout.php" class="logout-link"> Déconnexion</a>
     </div>
     </nav>
 </aside>
@@ -476,36 +486,36 @@ $recent_tasks = array_slice(array_reverse($tasks), 0, 5);
             <div id="date">--</div>
         </div>
         <div class="user-info">
-            <div class="user-name"><?php echo htmlspecialchars($_SESSION['user_nom']); ?></div>
-            <div class="user-email"><?php echo htmlspecialchars($_SESSION['user_email']); ?></div>
+            <div class="user-name"><?php echo htmlspecialchars($user_name); ?></div>
+            <div class="user-email"><?php echo htmlspecialchars($user_email); ?></div>
         </div>
     </header>
 
     <!-- Welcome Banner -->
     <div class="welcome-banner">
-        <h1>Good <?php echo date('H') < 12 ? 'Morning' : (date('H') < 18 ? 'Afternoon' : 'Evening'); ?>, <?php echo htmlspecialchars($_SESSION['user_nom']); ?> 👋</h1>
-        <p><?php echo $tasks_today; ?> task<?php echo $tasks_today > 1 ? 's' : ''; ?> due today. Stay focused! 💪</p>
+        <h1>Good <?php echo date('H') < 12 ? 'Morning' : (date('H') < 18 ? 'Afternoon' : 'Evening'); ?>, <?php echo htmlspecialchars($user_name); ?> </h1>
+        <p><?php echo $tasks_today; ?> task<?php echo $tasks_today > 1 ? 's' : ''; ?> due today. Stay focused! </p>
     </div>
 
     <!-- Stats -->
     <div class="stats-grid">
         <div class="stat-card">
-            <div class="stat-title">📋 PENDING TASKS</div>
+            <div class="stat-title"> PENDING TASKS</div>
             <div class="stat-number pending"><?php echo $pending; ?></div>
             <div class="stat-sub">Last 7 days</div>
         </div>
         <div class="stat-card">
-            <div class="stat-title">⚠️ OVERDUE TASKS</div>
+            <div class="stat-title"> OVERDUE TASKS</div>
             <div class="stat-number overdue"><?php echo $overdue; ?></div>
             <div class="stat-sub">Last 7 days</div>
         </div>
         <div class="stat-card">
-            <div class="stat-title">✅ TASKS COMPLETED</div>
+            <div class="stat-title">TASKS COMPLETED</div>
             <div class="stat-number done"><?php echo $done; ?></div>
             <div class="stat-sub">Last 7 days</div>
         </div>
         <div class="stat-card">
-            <div class="stat-title">🔥 YOUR STREAK</div>
+            <div class="stat-title"> YOUR STREAK</div>
             <div class="stat-number streak">0</div>
             <div class="stat-sub">Last 7 days</div>
         </div>
@@ -516,26 +526,26 @@ $recent_tasks = array_slice(array_reverse($tasks), 0, 5);
         <!-- Recent Tasks -->
         <div class="card">
             <div class="card-header">
-                <h3>📋 Recent Tasks</h3>
-                <a href="tasks.php">View all →</a>
+                <h3> Recent Tasks</h3>
+                <a href="tasks.php">View all </a>
             </div>
             <?php if (empty($recent_tasks)): ?>
                 <div class="empty-state">
-                    📭 No tasks yet<br>
+                     No tasks yet<br>
                     <a href="#" style="color:#667eea; font-size:0.8rem;">+ Add a task</a>
                 </div>
             <?php else: ?>
                 <?php foreach ($recent_tasks as $task): ?>
                 <div class="task-item">
                     <div class="task-check <?php echo $task['status'] == 'done' ? 'done' : ''; ?>">
-                        <?php echo $task['status'] == 'done' ? '✓' : ''; ?>
+                        <?php echo $task['status'] == 'done' ? '' : ''; ?>
                     </div>
                     <div class="task-info">
                         <div class="task-title <?php echo $task['status'] == 'done' ? 'done' : ''; ?>">
                             <?php echo htmlspecialchars($task['title']); ?>
                         </div>
                         <div class="task-meta">
-                            📅 <?php echo date('d M Y', strtotime($task['due_date'])); ?>
+                            <?php echo date('d M Y', strtotime($task['due_date'])); ?>
                         </div>
                     </div>
                 </div>
@@ -548,8 +558,8 @@ $recent_tasks = array_slice(array_reverse($tasks), 0, 5);
             <!-- Mini Calendar -->
             <div class="card">
                 <div class="card-header">
-                    <h3>📅 Calendar</h3>
-                    <a href="calendar.php">View →</a>
+                    <h3>Calendar</h3>
+                    <a href="calendar.php">View </a>
                 </div>
                 <div class="calendar-mini">
                     <div class="calendar-header">
@@ -565,8 +575,8 @@ $recent_tasks = array_slice(array_reverse($tasks), 0, 5);
             <!-- Next Exam -->
             <div class="card">
                 <div class="card-header">
-                    <h3>⚡ Next Exam</h3>
-                    <a href="exams.php">Add →</a>
+                    <h3> Next Exam</h3>
+                    <a href="exams.php">Add </a>
                 </div>
                 <div class="next-exam">
                     <span style="color: #8b8aa8;">No exams planned yet.</span>

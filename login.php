@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
     <div class="container">
-        <h1>🔐 Connexion StudyFlow</h1>
+        <h1> Connexion StudyFlow</h1>
         
         <?php if ($error): ?>
             <div class="error"><?php echo $error; ?></div>

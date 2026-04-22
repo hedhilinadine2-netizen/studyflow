@@ -358,25 +358,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
-        <div class="brand-icon">📚</div>
+        <div class="brand-icon"></div>
         <div class="brand-name">StudyFlow</div>
     </div>
     <nav class="sidebar-menu">
-        <a href="dashboard.php" class="s-link"><span class="s-ico">🏠</span> Dashboard</a>
-        <a href="calendar.php" class="s-link"><span class="s-ico">📅</span> Calendar</a>
-        <a href="tasks.php" class="s-link"><span class="s-ico">✅</span> Tasks</a>
-        <a href="exams.php" class="s-link"><span class="s-ico">📖</span> Exams</a>
-        <a href="classes.php" class="s-link"><span class="s-ico">📚</span> Classes</a>
-        <a href="vacations.php" class="s-link"><span class="s-ico">🌴</span> Vacations</a>
-        <a href="focus-timer.php" class="s-link"><span class="s-ico">⏱️</span> Focus Timer</a>
+        <a href="dashboard.php" class="s-link"><span class="s-ico"></span> Dashboard</a>
+        <a href="calendar.php" class="s-link"><span class="s-ico"></span> Calendar</a>
+        <a href="tasks.php" class="s-link"><span class="s-ico"></span> Tasks</a>
+        <a href="exams.php" class="s-link"><span class="s-ico"></span> Exams</a>
+        <a href="classes.php" class="s-link"><span class="s-ico"></span> Classes</a>
+        <a href="vacations.php" class="s-link"><span class="s-ico"></span> Vacations</a>
+        <a href="focus-timer.php" class="s-link"><span class="s-ico">⏱</span> Focus Timer</a>
     </nav>
     <div class="sidebar-bottom">
-        <a href="#" class="premium-btn">✨ Try Premium Free</a>
+        <a href="#" class="premium-btn"> Try Premium Free</a>
         <a href="add-task.php" class="add-new-btn">+ Add New</a>
-        <a href="#" class="dark-mode-link">🌙 Dark Mode</a>
-        <a href="#" class="dark-mode-link">❓ Help Center</a>
-        <a href="#" class="dark-mode-link">📅 Calendar Sync</a>
-        <a href="logout.php" class="logout-link">🚪 Déconnexion</a>
+        <a href="#" class="dark-mode-link"> Dark Mode</a>
+        <a href="#" class="dark-mode-link"> Help Center</a>
+        <a href="#" class="dark-mode-link"> Calendar Sync</a>
+        <a href="logout.php" class="logout-link"> Déconnexion</a>
     </div>
 </aside>
 
@@ -393,7 +393,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </header>
 
     <div class="form-container">
-        <h1 class="form-title">📖 Add New Exam</h1>
+        <h1 class="form-title"> Add New Exam</h1>
         <div class="form-subtitle">Fill in the details below to schedule your exam</div>
 
         <?php if ($error): ?>
@@ -413,11 +413,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="form-group">
                     <label>Exam Type</label>
                     <select name="exam_type">
-                        <option value="Exam">📖 Exam</option>
-                        <option value="Quiz">📝 Quiz</option>
-                        <option value="Test">✏️ Test</option>
-                        <option value="Final">🎓 Final Exam</option>
-                        <option value="Midterm">📚 Midterm</option>
+                        <option value="Exam"> Exam</option>
+                        <option value="Quiz"> Quiz</option>
+                        <option value="Test"> Test</option>
+                        <option value="Final"> Final Exam</option>
+                        <option value="Midterm"> Midterm</option>
                     </select>
                 </div>
             </div>
@@ -427,21 +427,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <label>Subject <span class="required">*</span></label>
                     <select name="subject" required>
                         <option value="">Select subject</option>
-                        <option value="Mathematics">📐 Mathematics</option>
-                        <option value="Physics">⚡ Physics</option>
-                        <option value="PHP">🐘 PHP</option>
-                        <option value="Web Development">🌐 Web Development</option>
-                        <option value="Database">🗄️ Database</option>
-                        <option value="English">📖 English</option>
-                        <option value="Computer Science">💻 Computer Science</option>
+                        <option value="Mathematics"> Mathematics</option>
+                        <option value="Physics"> Physics</option>
+                        <option value="PHP"> PHP</option>
+                        <option value="Web Development"> Web Development</option>
+                        <option value="Database"> Database</option>
+                        <option value="English"> English</option>
+                        <option value="Computer Science"> Computer Science</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label>Mode</label>
                     <select name="mode">
-                        <option value="In Person">🏫 In Person</option>
-                        <option value="Online">💻 Online</option>
-                        <option value="Hybrid">🔄 Hybrid</option>
+                        <option value="In Person"> In Person</option>
+                        <option value="Online"> Online</option>
+                        <option value="Hybrid"> Hybrid</option>
                     </select>
                 </div>
             </div>

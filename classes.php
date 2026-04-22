@@ -397,21 +397,21 @@ $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Su
 
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
-        <div class="brand-icon">📚</div>
+        <div class="brand-icon">SF</div>
         <div class="brand-name">StudyFlow</div>
     </div>
     <nav class="sidebar-menu">
-        <a href="dashboard.php" class="s-link"><span class="s-ico">🏠</span> Dashboard</a>
-        <a href="calendar.php" class="s-link"><span class="s-ico">📅</span> Calendar</a>
-        <a href="tasks.php" class="s-link"><span class="s-ico">✅</span> Tasks</a>
-        <a href="exams.php" class="s-link"><span class="s-ico">📖</span> Exams</a>
-        <a href="classes.php" class="s-link active"><span class="s-ico">📚</span> Classes</a>
-        <a href="vacations.php" class="s-link"><span class="s-ico">🌴</span> Vacations</a>
-        <a href="focus-timer.php" class="s-link"><span class="s-ico">⏱️</span> Focus Timer</a>
+        <a href="dashboard.php" class="s-link"><span class="s-ico"></span> Dashboard</a>
+        <a href="calendar.php" class="s-link"><span class="s-ico"></span> Calendar</a>
+        <a href="tasks.php" class="s-link"><span class="s-ico"></span> Tasks</a>
+        <a href="exams.php" class="s-link"><span class="s-ico"></span> Exams</a>
+        <a href="classes.php" class="s-link active"><span class="s-ico"></span> Classes</a>
+        <a href="vacations.php" class="s-link"><span class="s-ico"></span> Vacations</a>
+        <a href="focus-timer.php" class="s-link"><span class="s-ico">⏱</span> Focus Timer</a>
     </nav>
    <div class="sidebar-bottom">
         
-        <a href="logout.php" class="logout-link">🚪 Déconnexion</a>
+        <a href="logout.php" class="logout-link"> Déconnexion</a>
     </div>
 </aside>
 
@@ -427,7 +427,7 @@ $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Su
         </div>
     </header>
 
-    <h1 class="page-title">📚 Classes</h1>
+    <h1 class="page-title"> Classes</h1>
 
     <div class="filter-tabs">
         <div class="filter-tab active" onclick="filterClasses('active')">Active</div>
@@ -435,7 +435,7 @@ $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Su
     </div>
 
     <div class="subject-selector">
-        <label>📚 Filter by Subject:</label>
+        <label> Filter by Subject:</label>
         <select id="subjectFilter" onchange="filterClasses(currentFilter)">
             <option value="all">All Subjects</option>
             <option value="Mathematics">Mathematics</option>
@@ -486,7 +486,7 @@ $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Su
         if (filteredClasses.length === 0) {
             container.innerHTML = `
                 <div class="empty-state">
-                    <div class="empty-ico">📚</div>
+                    <div class="empty-ico"></div>
                     <p>No classes found</p>
                     <a href="add-class.php" style="color:#667eea; text-decoration:none;">+ Add a class</a>
                 </div>
@@ -497,21 +497,21 @@ $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Su
         container.innerHTML = filteredClasses.map(classItem => `
             <div class="class-item" data-id="${classItem.id}">
                 <div class="class-color" style="background: ${classItem.color || '#667eea'};"></div>
-                <div class="class-icon">📚</div>
+                <div class="class-icon"></div>
                 <div class="class-info">
                     <div class="class-title">${escapeHtml(classItem.class_name)}</div>
                     <div class="class-meta">
-                        <span>📖 ${escapeHtml(classItem.subject)}</span>
-                        ${classItem.teacher ? `<span>👨‍🏫 ${escapeHtml(classItem.teacher)}</span>` : ''}
-                        ${classItem.room ? `<span>📍 ${escapeHtml(classItem.room)}</span>` : ''}
-                        ${classItem.day_of_week ? `<span>📅 ${escapeHtml(classItem.day_of_week)}</span>` : ''}
+                        <span> ${escapeHtml(classItem.subject)}</span>
+                        ${classItem.teacher ? `<span>‍ ${escapeHtml(classItem.teacher)}</span>` : ''}
+                        ${classItem.room ? `<span> ${escapeHtml(classItem.room)}</span>` : ''}
+                        ${classItem.day_of_week ? `<span> ${escapeHtml(classItem.day_of_week)}</span>` : ''}
                         ${classItem.start_time ? `<span>⏰ ${formatTime(classItem.start_time)}${classItem.end_time ? ' - ' + formatTime(classItem.end_time) : ''}</span>` : ''}
                         <span class="badge ${classItem.status === 'completed' ? 'badge-completed' : ''}">${classItem.status === 'active' ? 'Active' : 'Completed'}</span>
                     </div>
                 </div>
                 <div class="class-actions">
-                    <button onclick="editClass(${classItem.id})" title="Edit">✏️</button>
-                    <button onclick="deleteClass(${classItem.id})" title="Delete">🗑️</button>
+                    <button onclick="editClass(${classItem.id})" title="Edit"></button>
+                    <button onclick="deleteClass(${classItem.id})" title="Delete"></button>
                 </div>
             </div>
         `).join('');

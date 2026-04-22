@@ -371,21 +371,21 @@ foreach ($vacations as $vacation) {
 
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
-        <div class="brand-icon">📚</div>
+        <div class="brand-icon">SF</div>
         <div class="brand-name">StudyFlow</div>
     </div>
     <nav class="sidebar-menu">
-        <a href="dashboard.php" class="s-link"><span class="s-ico">🏠</span> Dashboard</a>
-        <a href="calendar.php" class="s-link"><span class="s-ico">📅</span> Calendar</a>
-        <a href="tasks.php" class="s-link"><span class="s-ico">✅</span> Tasks</a>
-        <a href="exams.php" class="s-link"><span class="s-ico">📖</span> Exams</a>
-        <a href="classes.php" class="s-link"><span class="s-ico">📚</span> Classes</a>
-        <a href="vacations.php" class="s-link active"><span class="s-ico">🌴</span> Vacations</a>
-        <a href="focus-timer.php" class="s-link"><span class="s-ico">⏱️</span> Focus Timer</a>
+        <a href="dashboard.php" class="s-link"><span class="s-ico"></span> Dashboard</a>
+        <a href="calendar.php" class="s-link"><span class="s-ico"></span> Calendar</a>
+        <a href="tasks.php" class="s-link"><span class="s-ico"></span> Tasks</a>
+        <a href="exams.php" class="s-link"><span class="s-ico"></span> Exams</a>
+        <a href="classes.php" class="s-link"><span class="s-ico"></span> Classes</a>
+        <a href="vacations.php" class="s-link active"><span class="s-ico"></span> Vacations</a>
+        <a href="focus-timer.php" class="s-link"><span class="s-ico">⏱</span> Focus Timer</a>
     </nav>
    <div class="sidebar-bottom">
         
-        <a href="logout.php" class="logout-link">🚪 Déconnexion</a>
+        <a href="logout.php" class="logout-link"> Déconnexion</a>
     </div>
 </aside>
 
@@ -401,7 +401,7 @@ foreach ($vacations as $vacation) {
         </div>
     </header>
 
-    <h1 class="page-title">🌴 Vacations</h1>
+    <h1 class="page-title"> Vacations</h1>
 
     <div class="filter-tabs">
         <div class="filter-tab active" onclick="filterVacations('upcoming')">Upcoming</div>
@@ -451,7 +451,7 @@ foreach ($vacations as $vacation) {
             
             container.innerHTML = `
                 <div class="empty-state">
-                    <div class="empty-ico">🌴</div>
+                    <div class="empty-ico"></div>
                     <p>${message}</p>
                     <a href="add-vacation.php" style="color:#667eea; text-decoration:none;">+ Add a vacation</a>
                 </div>
@@ -472,24 +472,24 @@ foreach ($vacations as $vacation) {
                 badgeText = '🟢 Ongoing';
             } else {
                 badgeClass = 'badge-completed';
-                badgeText = 'Completed ✓';
+                badgeText = 'Completed ';
             }
             
             return `
             <div class="vacation-item" data-id="${vacation.id}">
-                <div class="vacation-icon">🌴</div>
+                <div class="vacation-icon"></div>
                 <div class="vacation-info">
                     <div class="vacation-title">${escapeHtml(vacation.title)}</div>
                     <div class="vacation-meta">
-                        <span>📅 ${formatDate(vacation.start_date)} → ${formatDate(vacation.end_date)}</span>
-                        ${vacation.destination ? `<span>📍 ${escapeHtml(vacation.destination)}</span>` : ''}
+                        <span> ${formatDate(vacation.start_date)}  ${formatDate(vacation.end_date)}</span>
+                        ${vacation.destination ? `<span> ${escapeHtml(vacation.destination)}</span>` : ''}
                         <span class="badge ${badgeClass}">${badgeText}</span>
                     </div>
                     ${vacation.description ? `<div style="font-size:0.7rem; color:#8b8aa8; margin-top:6px;">${escapeHtml(vacation.description)}</div>` : ''}
                 </div>
                 <div class="vacation-actions">
-                    <button onclick="editVacation(${vacation.id})" title="Edit">✏️</button>
-                    <button onclick="deleteVacation(${vacation.id})" title="Delete">🗑️</button>
+                    <button onclick="editVacation(${vacation.id})" title="Edit"></button>
+                    <button onclick="deleteVacation(${vacation.id})" title="Delete"></button>
                 </div>
             </div>
             `;

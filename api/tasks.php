@@ -445,21 +445,21 @@ foreach ($tasks as $task) {
 <!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
-        <div class="brand-icon">📚</div>
+        <div class="brand-icon"></div>
         <div class="brand-name">StudyFlow</div>
     </div>
     <nav class="sidebar-menu">
-        <a href="dashboard.php" class="s-link"><span class="s-ico">🏠</span> Dashboard</a>
-        <a href="calendar.php" class="s-link"><span class="s-ico">📅</span> Calendar</a>
-        <a href="activities.php" class="s-link"><span class="s-ico">📋</span> Activities</a>
-        <a href="tasks.php" class="s-link active"><span class="s-ico">✅</span> Tasks</a>
-        <a href="exams.php" class="s-link"><span class="s-ico">📖</span> Exams</a>
-        <a href="#" class="s-link"><span class="s-ico">⏱️</span> Focus Timer</a>
+        <a href="dashboard.php" class="s-link"><span class="s-ico"></span> Dashboard</a>
+        <a href="calendar.php" class="s-link"><span class="s-ico"></span> Calendar</a>
+        <a href="activities.php" class="s-link"><span class="s-ico"></span> Activities</a>
+        <a href="tasks.php" class="s-link active"><span class="s-ico"></span> Tasks</a>
+        <a href="exams.php" class="s-link"><span class="s-ico"></span> Exams</a>
+        <a href="#" class="s-link"><span class="s-ico">⏱</span> Focus Timer</a>
     </nav>
     <div class="sidebar-bottom">
-        <a href="#" class="premium-btn">✨ Try Premium Free</a>
+        <a href="#" class="premium-btn"> Try Premium Free</a>
         <a href="#" class="add-new-btn" onclick="openAddTaskModal()">+ Add New</a>
-        <a href="logout.php" class="logout-link">🚪 Déconnexion</a>
+        <a href="logout.php" class="logout-link"> Déconnexion</a>
     </div>
 </aside>
 
@@ -477,7 +477,7 @@ foreach ($tasks as $task) {
     </header>
 
     <div class="tasks-header">
-        <h1>📋 Tasks</h1>
+        <h1> Tasks</h1>
         <div class="filter-tabs">
             <div class="filter-tab active" onclick="filterTasks('current')">Current</div>
             <div class="filter-tab" onclick="filterTasks('past')">Past</div>
@@ -486,7 +486,7 @@ foreach ($tasks as $task) {
     </div>
 
     <div class="subject-selector">
-        <label>📚 Select Subject:</label>
+        <label> Select Subject:</label>
         <select id="subjectFilter">
             <option value="all">All Subjects</option>
             <option value="math">Mathematics</option>
@@ -505,7 +505,7 @@ foreach ($tasks as $task) {
 <!-- Add Task Modal -->
 <div class="modal" id="addTaskModal">
     <div class="modal-content">
-        <h3>➕ Add New Task</h3>
+        <h3> Add New Task</h3>
         <input type="text" id="taskTitle" placeholder="Task title">
         <input type="date" id="taskDate">
         <select id="taskSubject">
@@ -559,7 +559,7 @@ foreach ($tasks as $task) {
         if (filteredTasks.length === 0) {
             container.innerHTML = `
                 <div class="empty-state">
-                    <div class="empty-ico">📭</div>
+                    <div class="empty-ico"></div>
                     <p>No tasks found</p>
                     <button class="add-task-btn" onclick="openAddTaskModal()">+ Add a task</button>
                 </div>
@@ -570,18 +570,18 @@ foreach ($tasks as $task) {
         container.innerHTML = filteredTasks.map(task => `
             <div class="task-item" data-id="${task.id}">
                 <div class="task-check ${task.status === 'done' ? 'completed' : ''}" onclick="toggleTaskStatus(${task.id})">
-                    ${task.status === 'done' ? '✓' : ''}
+                    ${task.status === 'done' ? '' : ''}
                 </div>
                 <div class="task-info">
                     <div class="task-title ${task.status === 'done' ? 'completed' : ''}">${escapeHtml(task.title)}</div>
                     <div class="task-meta">
-                        <span class="task-subject">📖 ${task.subject || 'Task'}</span>
-                        <span>📅 ${formatDate(task.due_date)}</span>
+                        <span class="task-subject"> ${task.subject || 'Task'}</span>
+                        <span> ${formatDate(task.due_date)}</span>
                     </div>
                 </div>
                 <div class="task-actions">
-                    <button onclick="editTask(${task.id})">✏️</button>
-                    <button onclick="deleteTask(${task.id})">🗑️</button>
+                    <button onclick="editTask(${task.id})"></button>
+                    <button onclick="deleteTask(${task.id})"></button>
                 </div>
             </div>
         `).join('');

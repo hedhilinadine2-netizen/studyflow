@@ -391,21 +391,21 @@ foreach ($exams as $exam) {
 
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
-        <div class="brand-icon">📚</div>
+        <div class="brand-icon">SF</div>
         <div class="brand-name">StudyFlow</div>
     </div>
     <nav class="sidebar-menu">
-        <a href="dashboard.php" class="s-link"><span class="s-ico">🏠</span> Dashboard</a>
-        <a href="calendar.php" class="s-link"><span class="s-ico">📅</span> Calendar</a>
-        <a href="tasks.php" class="s-link"><span class="s-ico">✅</span> Tasks</a>
-        <a href="exams.php" class="s-link active"><span class="s-ico">📖</span> Exams</a>
-        <a href="classes.php" class="s-link"><span class="s-ico">📚</span> Classes</a>
-        <a href="vacations.php" class="s-link"><span class="s-ico">🌴</span> Vacations</a>
-        <a href="focus-timer.php" class="s-link"><span class="s-ico">⏱️</span> Focus Timer</a>
+        <a href="dashboard.php" class="s-link"><span class="s-ico"></span> Dashboard</a>
+        <a href="calendar.php" class="s-link"><span class="s-ico"></span> Calendar</a>
+        <a href="tasks.php" class="s-link"><span class="s-ico"></span> Tasks</a>
+        <a href="exams.php" class="s-link active"><span class="s-ico"></span> Exams</a>
+        <a href="classes.php" class="s-link"><span class="s-ico"></span> Classes</a>
+        <a href="vacations.php" class="s-link"><span class="s-ico"></span> Vacations</a>
+        <a href="focus-timer.php" class="s-link"><span class="s-ico">⏱</span> Focus Timer</a>
     </nav>
     <div class="sidebar-bottom">
         
-        <a href="logout.php" class="logout-link">🚪 Déconnexion</a>
+        <a href="logout.php" class="logout-link"> Déconnexion</a>
     </div>
 </aside>
 
@@ -421,7 +421,7 @@ foreach ($exams as $exam) {
         </div>
     </header>
 
-    <h1 class="page-title">📖 Exams</h1>
+    <h1 class="page-title"> Exams</h1>
 
     <div class="filter-tabs">
         <div class="filter-tab active" onclick="filterExams('current')">Current</div>
@@ -429,7 +429,7 @@ foreach ($exams as $exam) {
     </div>
 
     <div class="subject-selector">
-        <label>📚 Select Subject:</label>
+        <label> Select Subject:</label>
         <select id="subjectFilter" onchange="filterExams(currentFilter)">
             <option value="all">All Subjects</option>
             <option value="Mathematics">Mathematics</option>
@@ -481,7 +481,7 @@ foreach ($exams as $exam) {
         if (filteredExams.length === 0) {
             container.innerHTML = `
                 <div class="empty-state">
-                    <div class="empty-ico">📭</div>
+                    <div class="empty-ico"></div>
                     <p>No exams found</p>
                     <a href="add-exam.php" style="color:#667eea; text-decoration:none;">+ Add an exam</a>
                 </div>
@@ -491,20 +491,20 @@ foreach ($exams as $exam) {
         
         container.innerHTML = filteredExams.map(exam => `
             <div class="exam-item" data-id="${exam.id}">
-                <div class="exam-icon">📖</div>
+                <div class="exam-icon"></div>
                 <div class="exam-info">
                     <div class="exam-title">${escapeHtml(exam.exam_name)}</div>
                     <div class="exam-meta">
-                        <span>📅 ${formatDate(exam.exam_date)}</span>
-                        <span>📚 ${escapeHtml(exam.subject)}</span>
-                        <span>🏷️ ${escapeHtml(exam.exam_type)}</span>
-                        ${exam.mode ? `<span>${exam.mode === 'Online' ? '💻' : '🏫'} ${escapeHtml(exam.mode)}</span>` : ''}
-                        ${exam.room ? `<span>📍 ${escapeHtml(exam.room)}</span>` : ''}
-                        ${exam.duration ? `<span>⏱️ ${exam.duration} min</span>` : ''}
+                        <span> ${formatDate(exam.exam_date)}</span>
+                        <span> ${escapeHtml(exam.subject)}</span>
+                        <span> ${escapeHtml(exam.exam_type)}</span>
+                        ${exam.mode ? `<span>${exam.mode === 'Online' ? '' : ''} ${escapeHtml(exam.mode)}</span>` : ''}
+                        ${exam.room ? `<span> ${escapeHtml(exam.room)}</span>` : ''}
+                        ${exam.duration ? `<span>⏱ ${exam.duration} min</span>` : ''}
                     </div>
                 </div>
                 <div class="exam-actions">
-                    <button onclick="deleteExam(${exam.id})" title="Delete">🗑️</button>
+                    <button onclick="deleteExam(${exam.id})" title="Delete"></button>
                 </div>
             </div>
         `).join('');

@@ -22,10 +22,10 @@ function showToast(message, type = 'info', duration = 4000, actions = []) {
     }
 
     const colors = {
-        info:    { bg:'#1e40af', border:'#3b82f6', icon:'ℹ️' },
-        warning: { bg:'#92400e', border:'#f59e0b', icon:'⚠️' },
-        success: { bg:'#065f46', border:'#10b981', icon:'✅' },
-        error:   { bg:'#7f1d1d', border:'#ef4444', icon:'❌' },
+        info:    { bg:'#1e40af', border:'#3b82f6', icon:'' },
+        warning: { bg:'#92400e', border:'#f59e0b', icon:'' },
+        success: { bg:'#065f46', border:'#10b981', icon:'' },
+        error:   { bg:'#7f1d1d', border:'#ef4444', icon:'' },
     };
     const s = colors[type] || colors.info;
 
@@ -201,7 +201,7 @@ function renderTasks(tasks) {
     const allDone = tasks.every(t => t.status === 'done');
     if (allDone) {
         list.innerHTML = `<li style="text-align:center;padding:40px 20px;">
-            <div style="font-size:40px;margin-bottom:10px">🎉</div>
+            <div style="font-size:40px;margin-bottom:10px"></div>
             <strong style="font-size:16px">All tasks done!</strong><br>
             <span style="color:#9ca3af;font-size:13px">You crushed it. Time to relax.</span>
         </li>`;
@@ -229,7 +229,7 @@ function renderTasks(tasks) {
                     ${escapeHtml(task.title)}
                 </div>
                 <div style="font-size:12px;color:#9ca3af;margin-top:3px">
-                    📅 ${dateStr}
+                     ${dateStr}
                     ${isUrgent ? ' — <span style="color:#d97706;font-weight:500">Urgent</span>' : ''}
                 </div>
             </div>
@@ -239,13 +239,13 @@ function renderTasks(tasks) {
                     border:0.5px solid #d1d5db;background:#fff;cursor:pointer;">
                     <option value="pending"     ${task.status==='pending'     ?'selected':''}>Pending</option>
                     <option value="in_progress" ${task.status==='in_progress' ?'selected':''}>In Progress</option>
-                    <option value="done"        ${task.status==='done'        ?'selected':''}>Done ✅</option>
+                    <option value="done"        ${task.status==='done'        ?'selected':''}>Done </option>
                 </select>
                 <button class="btn-edit" data-id="${task.id}"
                     data-title="${escapeHtml(task.title)}" data-date="${task.due_date}"
-                    style="background:none;border:none;cursor:pointer;font-size:15px;padding:4px;">✏️</button>
+                    style="background:none;border:none;cursor:pointer;font-size:15px;padding:4px;"></button>
                 <button class="btn-delete" data-id="${task.id}" data-title="${escapeHtml(task.title)}"
-                    style="background:none;border:none;cursor:pointer;font-size:15px;padding:4px;">🗑️</button>
+                    style="background:none;border:none;cursor:pointer;font-size:15px;padding:4px;"></button>
             </div>
         </li>`;
     }).join('');
