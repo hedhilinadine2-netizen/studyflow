@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>StudyFlow  — Ta vie étudiante, enfin organisée</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+  <div class="logo">
+    <div class="logo-box" style="color: aliceblue;">SF</div>
+    StudyFlow
+  </div>
+  <div class="nav-right">
+    <a href="#features"><button class="btn-login" style="cursor:pointer; border:none; background:transparent; font-family:inherit; font-size:0.88rem; color:var(--muted);">Fonctionnalités</button></a>
+    <a href="login.php"><button class="btn-login">Connexion</button></a>
+    <a href="register.php"><button class="btn-signup">S'inscrire </button></a>
+  </div>
+  <div class="burger" id="burger" onclick="toggleNav()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<div class="mobile-nav" id="mobileNav">
+  <a href="#features" onclick="toggleNav()"> Fonctionnalités</a>
+  <a href="#how" onclick="toggleNav()"> Comment ça marche</a>
+  <a href="login.php"> Connexion</a>
+  <a href="register.php" class="m-signup"> S'inscrire gratuitement</a>
+</div>
+
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-tag"> Fait pour les étudiants, par des étudiants</div>
+    <h1>Fini le stress <br>Bienvenue sur <span class="accent">StudyFlow</span></h1>
+    <p class="hero-desc">
+     Tu cours entre les cours, les amis et les examens?<br>
+      StudyFlow met tout dans le même panier.<br>
+       Tu ranges ton planning, tu gardes un œil sur les dates, et ça t'envoie un petit coucou avant que ça coince.
+    </p>
+    <div class="hero-btns">
+      <a href="register.php" class="cta-main">Commencer</a>
+      <a href="#features" class="cta-ghost">Voir comment ça marche</a>
+    </div>
+
+  </div>
+
+  <div class="hero-right">
+    <div class="floating-notif notif-top">
+      
+      <div class="notif-text">
+        <div class="n-title">Rappel urgent !</div>
+        <div class="n-sub">Examen WEB , demain 9h</div>
+      </div>
+    </div>
+
+    <div class="photo-grid">
+      <img class="big"
+        src="image1.jpeg"
+        alt="Étudiant qui travaille"/>
+      <img
+        src="image2.jpeg"
+        alt="Prise de notes"/>
+      <img
+        src="nous.jpeg"
+        alt="Planning étudiant"/>
+    </div>
+
+    <div class="floating-notif notif-bottom">
+     
+      <div class="notif-text">
+        <div class="n-title">Tâche complétée </div>
+        <div class="n-sub">TP Algo rendu avec succès</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-wrap" id="features">
+  <div class="section-top">
+    <span class="section-chip"> Ce qu'on te propose</span>
+    <h2>Tout ce qu'il te faut pour <br>cartonner cette année </h2>
+    <p>Simple, rapide, efficace.<br> Exactement ce dont un étudiant a besoin.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feat-card">
+      <img class="feat-img"
+        src="gdt.jpeg"
+        alt="Gestion des tâches"/>
+      <div class="feat-body">
+        <div class="feat-icon-row">
+          
+          <h3>Gestion des tâches</h3>
+        </div>
+        <p>Ajoute tes devoirs, examens et projets. Plus jamais une deadline oubliée. Tu peux filtrer par type, date ou statut. </p>
+      </div>
+    </div>
+
+    <div class="feat-card">
+      <img class="feat-img"
+        src="emploi.jpeg"
+        alt="Emploi du temps"/>
+      <div class="feat-body">
+        <div class="feat-icon-row">
+         
+          <h3>Emploi du temps</h3>
+        </div>
+        <p>Crée ta grille horaire semaine par semaine. Visualise tes cours, tes révisions et tes créneaux libres d'un seul regard. </p>
+      </div>
+    </div>
+
+    <div class="feat-card">
+      <img class="feat-img"
+        src="rappel.jpg"
+        alt="Rappels automatiques"/>
+      <div class="feat-body">
+        <div class="feat-icon-row">
+          
+          <h3>Rappels automatiques</h3>
+        </div>
+        <p>Tu reçois une alerte quand une deadline approche à moins de 2 jours. Plus d'excuses pour remettre à demain ce que tu peux faire... maintenant </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-wrap testimonials">
+  <div class="section-top">
+    <span class="section-chip"> Ce qu'ils en pensent</span>
+    <h2>Des étudiants comme toi adorent StudyFlow </h2>
+  </div>
+  <div class="testi-grid">
+    <div class="testi-card">
+      <div class="testi-top">
+        <img class="testi-avatar"
+          src="majd.jpg"
+          alt="majd"/>
+        <div>
+          <div class="testi-name">Majd Agrebi</div>
+          <div class="testi-role">L2 info</div>
+        </div>
+      </div>
+      <div class="testi-stars"></div>
+      <p>"Franchement je cherchais un truc simple et j'ai trouvé. Je gère tout depuis le tableau de bord, c'est fluide et ça ressemble pas aux applis chiantes qu'on voit d'habitude."</p>
+    </div>
+
+    <div class="testi-card">
+      <div class="testi-top">
+        <img class="testi-avatar"
+          src="nadine.jpg"
+          alt="nadine"/>
+        <div>
+          <div class="testi-name">Nadine Hedhili</div>
+          <div class="testi-role">L2 info</div>
+        </div>
+      </div>
+      <div class="testi-stars"></div>
+      <p>"Les rappels m'ont sauvé plusieurs fois. J'avais complètement oublié un TP et boum, notification 2 jours avant. Depuis j'ai plus eu zéro Vraiment utile."</p>
+    </div>
+
+    <div class="testi-card">
+      <div class="testi-top">
+        <img class="testi-avatar"
+          src="zeineb.jpg"
+          alt="zeineb"/>
+        <div>
+          <div class="testi-name">Zeineb Khalfallah</div>
+          <div class="testi-role">L2 info</div>
+        </div>
+      </div>
+      <div class="testi-stars"></div>
+      <p>"L'emploi du temps c'est top. Avant j'avais tout dans ma tête et je stressais. Maintenant j'ouvre StudyFlow le matin et je sais exactement ce que j'ai à faire "</p>
+    </div>
+  </div>
+</section>
+
+<section class="section-wrap" id="how" style="background: var(--gris);">
+  <div class="section-top">
+    <span class="section-chip"> Super simple</span>
+    <h2>Prêt en 3 minutes chrono </h2>
+  </div>
+  <div class="steps-row">
+    <div class="step-box">
+      <div class="step-circle">1</div>
+      <h3>Crée ton compte </h3>
+      <p>Inscription gratuite, juste ton email et un mot de passe.</p>
+    </div>
+    <div class="step-box">
+      <div class="step-circle">2</div>
+      <h3>Ajoute tes tâches </h3>
+      <p>Rentre tes devoirs, examens, projets avec les dates limites.</p>
+    </div>
+    <div class="step-box">
+      <div class="step-circle">3</div>
+      <h3>Garde le contrôle</h3>
+      <p>Suis ta progression, reçois tes rappels.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <h2>Alors, on commence ? </h2>
+  <p>Rejoins pour gèrer ta vie académique avec StudyFlow.<br>C'est gratuit, c'est rapide, et ça change vraiment la donne.</p>
+  <a href="register.php" class="cta-btn-white">Créer mon compte </a>
+</section>
+
+<footer>
+  <div class="logo">
+    <div class="logo-box" style="color: aliceblue;">SF</div>
+    StudyFlow
+  </div>
+  <p> 2026 StudyFlow Fait pour les étudiants</p>
+  <div class="footer-links">
+    <a href="#">Accueil</a>
+    <a href="login.php">Connexion</a>
+    <a href="register.php">Inscription</a>
+  </div>
+</footer>
+
+<script>
+  function toggleNav() {
+    document.getElementById('mobileNav').classList.toggle('show');
+  }
+
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', () => {
+      document.getElementById('mobileNav').classList.remove('show');
+    });
+  });
+
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    nav.style.boxShadow = window.scrollY > 15
+      ? '0 2px 18px rgba(108,99,255,0.09)' : 'none';
+  });
+</script>
+
+</body>
+</html>
