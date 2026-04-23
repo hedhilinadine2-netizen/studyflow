@@ -504,9 +504,9 @@ foreach ($tasks as $task) {
                         ${task.status !== 'done' ? '<span class="badge">Pending</span>' : '<span class="badge">Completed </span>'}
                     </div>
                 </div>
-                <div class="task-actions">
-                    <button onclick="editTask(${task.id})" title="Edit"></button>
-                    <button onclick="deleteTask(${task.id})" title="Delete"></button>
+<div class="task-actions">
+                    <button onclick="editTask(${task.id})" title="Edit">✏️</button>
+                    <button onclick="deleteTask(${task.id})" title="Delete">🗑️</button>
                 </div>
             </div>
             `;

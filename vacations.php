@@ -490,8 +490,8 @@ $today = date('Y-m-d');
                     ${vacation.description ? `<div style="font-size:0.7rem; color:#8b8aa8; margin-top:6px;">${escapeHtml(vacation.description)}</div>` : ''}
                 </div>
                 <div class="task-actions">
-                    <button onclick="editVacation(${vacation.id})" title="Edit"></button>
-                    <button onclick="deleteVacation(${vacation.id})" title="Delete"></button>
+                    <button onclick="editVacation(${vacation.id})" title="Edit">✏️</button>
+                    <button onclick="deleteVacation(${vacation.id})" title="Delete">🗑️</button>
                 </div>
             </div>
             `;

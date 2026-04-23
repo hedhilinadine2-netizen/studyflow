@@ -499,8 +499,8 @@ $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Su
                     </div>
                 </div>
                 <div class="task-actions">
-                    <button onclick="editClass(${classItem.id})" title="Edit"></button>
-                    <button onclick="deleteClass(${classItem.id})" title="Delete"></button>
+                    <button onclick="editClass(${classItem.id})" title="Edit">✏️</button>
+                    <button onclick="deleteClass(${classItem.id})" title="Delete">🗑️</button>
                 </div>
             </div>
             `;
