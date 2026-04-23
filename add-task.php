@@ -10,14 +10,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $subject = trim($_POST['subject']);
     $due_date = trim($_POST['due_date']);
     $description = trim($_POST['description']);
-    $task_type = trim($_POST['task_type']);
+    $task_type = trim($_POST['task_type'] ?? 'Task');
     
     if (empty($title) || empty($subject) || empty($due_date)) {
         $error = "Please fill all required fields.";
     } else {
-        $stmt = $pdo->prepare("INSERT INTO tasks (user_id, title, subject, due_date, description, task_type, status) VALUES (?, ?, ?, ?, ?, ?, 'pending')");
+        $stmt = $pdo->prepare("INSERT INTO tasks (user_id, title, subject, task_type, due_date, description, status) VALUES (?, ?, ?, ?, ?, ?, 'pending')");
         
-        if ($stmt->execute([$_SESSION['user_id'], $title, $subject, $due_date, $description, $task_type])) {
+        if ($stmt->execute([$_SESSION['user_id'], $title, $subject, $task_type, $due_date, $description])) {
             $success = "Task added successfully!";
             echo "<script>setTimeout(function(){ window.location.href = 'tasks.php'; }, 1500);</script>";
         } else {
@@ -441,11 +441,11 @@ if ($remainingTasks < 0) $remainingTasks = 0;
                 <div class="form-group">
                     <label>Task Type</label>
                     <select name="task_type">
-                        <option value="Task"> Task</option>
-                        <option value="Exam"> Exam</option>
-                        <option value="Homework"> Homework</option>
-                        <option value="Project"> Project</option>
-                        <option value="Study"> Study</option>
+                        <option value="Task">Task</option>
+                        <option value="Exam">Exam</option>
+                        <option value="Homework">Homework</option>
+                        <option value="Project">Project</option>
+                        <option value="Study">Study</option>
                     </select>
                 </div>
                 <div class="form-group">

@@ -418,13 +418,13 @@ foreach ($tasks as $task) {
     <h1 class="page-title"> Tasks</h1>
 
     <div class="filter-tabs">
-        <div class="filter-tab active" onclick="filterTasks('current')">Current</div>
-        <div class="filter-tab" onclick="filterTasks('completed')">Completed</div>
+        <div class="filter-tab active" onclick="filterTasks(event, 'current')">Current</div>
+        <div class="filter-tab" onclick="filterTasks(event, 'completed')">Completed</div>
     </div>
 
     <div class="subject-selector">
         <label> Select Subject:</label>
-        <select id="subjectFilter" onchange="filterTasks(currentFilter)">
+        <select id="subjectFilter">
             <option value="all">All Subjects</option>
             <option value="Mathematics">Mathematics</option>
             <option value="Physics">Physics</option>
@@ -458,10 +458,10 @@ foreach ($tasks as $task) {
         return dueDate < today;
     }
 
-    function filterTasks(filter) {
+    function filterTasks(evt, filter) {
         currentFilter = filter;
         document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
-        event.target.classList.add('active');
+        evt.target.classList.add('active');
         renderTasks();
     }
 
@@ -477,10 +477,11 @@ foreach ($tasks as $task) {
         const container = document.getElementById('tasksList');
         
         if (filteredTasks.length === 0) {
+            const message = currentFilter === 'current' ? 'No current tasks found' : 'No completed tasks found';
             container.innerHTML = `
                 <div class="empty-state">
                     <div class="empty-ico"></div>
-                    <p>No tasks found</p>
+                    <p>${message}</p>
                     <a href="add-task.php" style="color:#667eea; text-decoration:none;">+ Add a task</a>
                 </div>
             `;
@@ -488,10 +489,10 @@ foreach ($tasks as $task) {
         }
         
         container.innerHTML = filteredTasks.map(task => {
-            const overdue = !task.status === 'done' && isOverdue(task.due_date);
+            const overdue = task.status !== 'done' && isOverdue(task.due_date);
             return `
             <div class="task-item" data-id="${task.id}">
-                <div class="task-check ${task.status === 'done' ? 'completed' : ''}" onclick="toggleStatus(${task.id})">
+                <div class="task-check ${task.status === 'done' ? 'completed' : ''}" onclick="toggleStatus(${task.id}, '${task.status}')">
                     ${task.status === 'done' ? '' : ''}
                 </div>
                 <div class="task-info">
@@ -517,34 +518,20 @@ foreach ($tasks as $task) {
         return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
-    function toggleStatus(id) {
-        const task = allTasks.find(t => t.id == id);
-        const newStatus = task.status === 'done' ? 'pending' : 'done';
-        
-        fetch(`api/tasks.php?id=${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ status: newStatus })
-        }).then(() => location.reload());
+    function toggleStatus(id, currentStatus) {
+        const newStatus = currentStatus === 'done' ? 'pending' : 'done';
+        window.location.href = 'api/update-task-status.php?id=' + id + '&status=' + newStatus;
     }
 
     function deleteTask(id) {
         if (confirm('Delete this task?')) {
-            fetch(`api/tasks.php?id=${id}`, { method: 'DELETE' })
-            .then(() => location.reload());
+            window.location.href = 'api/delete-task.php?id=' + id;
         }
     }
 
     function editTask(id) {
-        // Redirect to edit page or open modal
-        window.location.href = `edit-task.php?id=${id}`;
+        window.location.href = 'edit-task.php?id=' + id;
     }
-
-    // Update subject filter
-    document.getElementById('subjectFilter').addEventListener('change', function() {
-        currentSubject = this.value;
-        renderTasks();
-    });
 
     function updateClock() {
         const now = new Date();

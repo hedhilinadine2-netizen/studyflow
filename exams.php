@@ -2,23 +2,12 @@
 require_once 'includes/config.php';
 requireLogin();
 
-// Create exams table if not exists
-$pdo->exec("CREATE TABLE IF NOT EXISTS exams (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    exam_name VARCHAR(255) NOT NULL,
-    exam_type VARCHAR(100) DEFAULT 'Exam',
-    subject VARCHAR(255) NOT NULL,
-    mode VARCHAR(100) DEFAULT 'In Person',
-    seat VARCHAR(50),
-    room VARCHAR(100),
-    exam_date DATE NOT NULL,
-    exam_time TIME,
-    duration INT,
-    status ENUM('current', 'past', 'overdue') DEFAULT 'current',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-)");
+// Ensure exams table has status column
+try {
+    $pdo->exec("ALTER TABLE exams ADD COLUMN status VARCHAR(50) DEFAULT 'current'");
+} catch (Exception $e) {
+    // Column might already exist
+}
 
 // Fetch exams
 $stmt = $pdo->prepare("SELECT * FROM exams WHERE user_id = ? ORDER BY exam_date ASC");
@@ -27,12 +16,13 @@ $exams = $stmt->fetchAll();
 
 // Filter exams
 $current_exams = [];
-$past_exams = [];
+$completed_exams = [];
 $today = date('Y-m-d');
 
 foreach ($exams as $exam) {
-    if ($exam['exam_date'] < $today) {
-        $past_exams[] = $exam;
+    $status = $exam['status'] ?? 'current';
+    if ($status === 'done') {
+        $completed_exams[] = $exam;
     } else {
         $current_exams[] = $exam;
     }
@@ -58,7 +48,6 @@ foreach ($exams as $exam) {
             color: #1a1a2e;
         }
 
-        /* ========== SIDEBAR ========== */
         .sidebar {
             position: fixed;
             left: 0;
@@ -175,17 +164,6 @@ foreach ($exams as $exam) {
             background: #fef2f2;
         }
 
-        .dark-mode-link {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 16px;
-            color: #5a5a7a;
-            text-decoration: none;
-            font-size: 0.85rem;
-            margin-top: 10px;
-        }
-
         /* ========== MAIN ========== */
         .main {
             margin-left: 260px;
@@ -277,14 +255,14 @@ foreach ($exams as $exam) {
             cursor: pointer;
         }
 
-        .exams-list {
+        .tasks-list {
             background: white;
             border-radius: 20px;
             border: 1px solid #e8ecf2;
             overflow: hidden;
         }
 
-        .exam-item {
+        .task-item {
             display: flex;
             align-items: center;
             gap: 16px;
@@ -293,32 +271,44 @@ foreach ($exams as $exam) {
             transition: background 0.2s;
         }
 
-        .exam-item:hover {
+        .task-item:hover {
             background: #fafbfd;
         }
 
-        .exam-icon {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
-            border-radius: 14px;
+        .task-check {
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            border: 2px solid #d1d5db;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            transition: all 0.2s;
         }
 
-        .exam-info {
+        .task-check.completed {
+            background: #10b981;
+            border-color: #10b981;
+            color: white;
+        }
+
+        .task-info {
             flex: 1;
         }
 
-        .exam-title {
+        .task-title {
             font-size: 1rem;
-            font-weight: 600;
+            font-weight: 500;
             margin-bottom: 6px;
         }
 
-        .exam-meta {
+        .task-title.completed {
+            text-decoration: line-through;
+            color: #9ca3af;
+        }
+
+        .task-meta {
             display: flex;
             gap: 20px;
             flex-wrap: wrap;
@@ -326,7 +316,7 @@ foreach ($exams as $exam) {
             color: #8b8aa8;
         }
 
-        .exam-meta span {
+        .task-meta span {
             display: flex;
             align-items: center;
             gap: 4px;
@@ -341,17 +331,17 @@ foreach ($exams as $exam) {
             font-weight: 500;
         }
 
-        .badge-past {
-            background: #f0f2f9;
-            color: #8b8aa8;
+        .badge-overdue {
+            background: #fef2f2;
+            color: #ef4444;
         }
 
-        .exam-actions {
+        .task-actions {
             display: flex;
             gap: 8px;
         }
 
-        .exam-actions button {
+        .task-actions button {
             background: none;
             border: none;
             cursor: pointer;
@@ -361,7 +351,7 @@ foreach ($exams as $exam) {
             transition: background 0.2s;
         }
 
-        .exam-actions button:hover {
+        .task-actions button:hover {
             background: #f0f2f9;
         }
 
@@ -403,8 +393,7 @@ foreach ($exams as $exam) {
         <a href="vacations.php" class="s-link"><span class="s-ico"></span> Vacations</a>
         <a href="focus-timer.php" class="s-link"><span class="s-ico"></span> Focus Timer</a>
     </nav>
-    <div class="sidebar-bottom">
-        
+   <div class="sidebar-bottom">
         <a href="logout.php" class="logout-link"> Déconnexion</a>
     </div>
 </aside>
@@ -424,13 +413,13 @@ foreach ($exams as $exam) {
     <h1 class="page-title"> Exams</h1>
 
     <div class="filter-tabs">
-        <div class="filter-tab active" onclick="filterExams('current')">Current</div>
-        <div class="filter-tab" onclick="filterExams('past')">Past</div>
+        <div class="filter-tab active" onclick="filterExams(event, 'current')">Current</div>
+        <div class="filter-tab" onclick="filterExams(event, 'completed')">Completed</div>
     </div>
 
     <div class="subject-selector">
         <label> Select Subject:</label>
-        <select id="subjectFilter" onchange="filterExams(currentFilter)">
+        <select id="subjectFilter">
             <option value="all">All Subjects</option>
             <option value="Mathematics">Mathematics</option>
             <option value="Physics">Physics</option>
@@ -443,8 +432,7 @@ foreach ($exams as $exam) {
         <a href="add-exam.php" style="margin-left: auto; background:#667eea; color:white; padding:8px 20px; border-radius:10px; text-decoration:none; font-size:0.85rem;">+ Add Exam</a>
     </div>
 
-    <div class="exams-list" id="examsList">
-        <!-- Exams will be loaded here -->
+    <div class="tasks-list" id="examsList">
     </div>
 </main>
 
@@ -459,18 +447,17 @@ foreach ($exams as $exam) {
         return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
     }
 
-    function filterExams(filter) {
+    function filterExams(evt, filter) {
         currentFilter = filter;
         document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
-        event.target.classList.add('active');
+        evt.target.classList.add('active');
         renderExams();
     }
 
     function renderExams() {
-        let today = new Date().toISOString().split('T')[0];
         let filteredExams = currentFilter === 'current' ? 
-            allExams.filter(e => e.exam_date >= today) : 
-            allExams.filter(e => e.exam_date < today);
+            allExams.filter(e => e.status !== 'completed') : 
+            allExams.filter(e => e.status === 'completed');
         
         if (currentSubject !== 'all') {
             filteredExams = filteredExams.filter(e => e.subject === currentSubject);
@@ -479,35 +466,43 @@ foreach ($exams as $exam) {
         const container = document.getElementById('examsList');
         
         if (filteredExams.length === 0) {
+            const message = currentFilter === 'current' ? 'No current exams found' : 'No completed exams found';
             container.innerHTML = `
                 <div class="empty-state">
                     <div class="empty-ico"></div>
-                    <p>No exams found</p>
+                    <p>${message}</p>
                     <a href="add-exam.php" style="color:#667eea; text-decoration:none;">+ Add an exam</a>
                 </div>
             `;
             return;
         }
         
-        container.innerHTML = filteredExams.map(exam => `
-            <div class="exam-item" data-id="${exam.id}">
-                <div class="exam-icon"></div>
-                <div class="exam-info">
-                    <div class="exam-title">${escapeHtml(exam.exam_name)}</div>
-                    <div class="exam-meta">
+        container.innerHTML = filteredExams.map(exam => {
+            const examStatus = exam.status || 'current';
+            return `
+            <div class="task-item" data-id="${exam.id}">
+                <div class="task-check ${examStatus === 'completed' ? 'completed' : ''}" 
+                     onclick="toggleStatus(${exam.id}, '${examStatus}')">
+                </div>
+                <div class="task-info">
+                    <div class="task-title ${examStatus === 'completed' ? 'completed' : ''}">${escapeHtml(exam.exam_name)}</div>
+                    <div class="task-meta">
                         <span> ${formatDate(exam.exam_date)}</span>
                         <span> ${escapeHtml(exam.subject)}</span>
                         <span> ${escapeHtml(exam.exam_type)}</span>
-                        ${exam.mode ? `<span>${exam.mode === 'Online' ? '' : ''} ${escapeHtml(exam.mode)}</span>` : ''}
-                        ${exam.room ? `<span> ${escapeHtml(exam.room)}</span>` : ''}
-                        ${exam.duration ? `<span>⏱ ${exam.duration} min</span>` : ''}
+                        ${exam.mode ? `<span>${escapeHtml(exam.mode)}</span>` : ''}
+                        ${exam.room ? `<span> Room: ${escapeHtml(exam.room)}</span>` : ''}
+                        ${exam.duration ? `<span> ${exam.duration} min</span>` : ''}
+                        ${examStatus !== 'completed' ? '<span class="badge">Pending</span>' : '<span class="badge">Completed</span>'}
                     </div>
                 </div>
-                <div class="exam-actions">
-                    <button onclick="deleteExam(${exam.id})" title="Delete"></button>
+                <div class="task-actions">
+                    <button onclick="editExam(${exam.id})" title="Edit">✏️</button>
+                    <button onclick="deleteExam(${exam.id})" title="Delete">🗑️</button>
                 </div>
             </div>
-        `).join('');
+            `;
+        }).join('');
     }
 
     function escapeHtml(str) {
@@ -515,14 +510,33 @@ foreach ($exams as $exam) {
         return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
+function toggleStatus(id, currentStatus) {
+        var newStatus = currentStatus === 'completed' ? 'current' : 'completed';
+        var url = 'api/update-exam-status.php?id=' + id + '&status=' + newStatus;
+        
+        fetch(url)
+            .then(response => response.text())
+            .then(text => {
+                alert(text);
+                location.reload();
+            })
+            .catch(error => {
+                alert('Error: ' + error.message);
+            });
+        
+        return false;
+    }
+
     function deleteExam(id) {
         if (confirm('Delete this exam?')) {
-            fetch(`api/delete-exam.php?id=${id}`, { method: 'DELETE' })
-            .then(() => location.reload());
+            window.location.href = 'api/delete-exam.php?id=' + id;
         }
     }
 
-    // Update subject filter
+    function editExam(id) {
+        window.location.href = 'edit-exam.php?id=' + id;
+    }
+
     document.getElementById('subjectFilter').addEventListener('change', function() {
         currentSubject = this.value;
         renderExams();

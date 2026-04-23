@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS tasks (
     user_id INT NOT NULL,
     title VARCHAR(255) NOT NULL,
     subject VARCHAR(100) DEFAULT 'General',
+    task_type VARCHAR(50) DEFAULT 'Task',
     due_date DATE NOT NULL,
     description TEXT,
     status ENUM('pending', 'in_progress', 'done', 'overdue') DEFAULT 'pending',

@@ -3,29 +3,74 @@ require_once 'includes/config.php';
 requireLogin();
 
 $error = '';
-$success = '';
+
+// Create the exams table with all required columns
+try {
+    $pdo->exec("CREATE TABLE IF NOT EXISTS exams (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        exam_name VARCHAR(255) NOT NULL,
+        exam_type VARCHAR(100) DEFAULT 'Exam',
+        subject VARCHAR(255) NOT NULL,
+        mode VARCHAR(100) DEFAULT 'In Person',
+        seat VARCHAR(50),
+        room VARCHAR(100),
+        exam_date DATE NOT NULL,
+        exam_time TIME,
+        duration INT,
+        status VARCHAR(50) DEFAULT 'current',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    )");
+} catch (Exception $e) {
+    // Table might already exist
+}
+
+// Add status column if it doesn't exist
+try {
+    $pdo->exec("ALTER TABLE exams ADD COLUMN status VARCHAR(50) DEFAULT 'current'");
+} catch (Exception $e) {
+    // Column might already exist
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $exam_name = trim($_POST['exam_name']);
-    $exam_type = trim($_POST['exam_type']);
-    $subject = trim($_POST['subject']);
-    $mode = trim($_POST['mode']);
-    $seat = trim($_POST['seat']);
-    $room = trim($_POST['room']);
-    $date = trim($_POST['date']);
-    $time = trim($_POST['time']);
-    $duration = trim($_POST['duration']);
+    $exam_name = isset($_POST['exam_name']) ? trim($_POST['exam_name']) : '';
+    $exam_type = isset($_POST['exam_type']) ? trim($_POST['exam_type']) : '';
+    $subject = isset($_POST['subject']) ? trim($_POST['subject']) : '';
+    $mode = isset($_POST['mode']) ? trim($_POST['mode']) : '';
+    $seat = isset($_POST['seat']) ? trim($_POST['seat']) : '';
+    $room = isset($_POST['room']) ? trim($_POST['room']) : '';
+    $date = isset($_POST['date']) ? trim($_POST['date']) : '';
+    $time = isset($_POST['time']) ? trim($_POST['time']) : '';
+    $duration = isset($_POST['duration']) ? trim($_POST['duration']) : '';
+    
+    $exam_type = $exam_type ?: 'Exam';
+    $mode = $mode ?: 'In Person';
     
     if (empty($exam_name) || empty($subject) || empty($date)) {
         $error = "Please fill all required fields.";
     } else {
-        $stmt = $pdo->prepare("INSERT INTO exams (user_id, exam_name, exam_type, subject, mode, seat, room, exam_date, exam_time, duration) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        
-        if ($stmt->execute([$_SESSION['user_id'], $exam_name, $exam_type, $subject, $mode, $seat, $room, $date, $time, $duration])) {
-            $success = "Exam added successfully!";
-            echo "<script>setTimeout(function(){ window.location.href = 'exams.php'; }, 1500);</script>";
-        } else {
-            $error = "Error adding exam.";
+        try {
+            // Insert with explicit column list matching values
+            $sql = "INSERT INTO exams (user_id, exam_name, exam_type, subject, mode, seat, room, exam_date, exam_time, duration, status) 
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'current')";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                $_SESSION['user_id'],
+                $exam_name,
+                $exam_type,
+                $subject,
+                $mode,
+                $seat,
+                $room,
+                $date,
+                $time,
+                $duration
+            ]);
+            header("Location: exams.php");
+            exit;
+        } catch (PDOException $e) {
+            $error = "Error adding exam: " . $e->getMessage();
         }
     }
 }
@@ -393,10 +438,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <?php if ($error): ?>
             <div class="alert alert-error"><?php echo $error; ?></div>
-        <?php endif; ?>
-
-        <?php if ($success): ?>
-            <div class="alert alert-success"><?php echo $success; ?></div>
         <?php endif; ?>
 
         <form method="POST" action="">

@@ -2,22 +2,16 @@
 require_once 'includes/config.php';
 requireLogin();
 
-// Create classes table if not exists
-$pdo->exec("CREATE TABLE IF NOT EXISTS classes (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    class_name VARCHAR(255) NOT NULL,
-    subject VARCHAR(255) NOT NULL,
-    teacher VARCHAR(255),
-    room VARCHAR(100),
-    day_of_week VARCHAR(20),
-    start_time TIME,
-    end_time TIME,
-    color VARCHAR(20) DEFAULT '#667eea',
-    status ENUM('active', 'completed') DEFAULT 'active',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-)");
+// Ensure classes table has status column
+try {
+    $pdo->exec("ALTER TABLE classes ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT 'active'");
+} catch (Exception $e) {
+    try {
+        $pdo->exec("ALTER TABLE classes ADD COLUMN status VARCHAR(50) DEFAULT 'active'");
+    } catch (Exception $e2) {
+        // Column might already exist
+    }
+}
 
 // Fetch classes
 $stmt = $pdo->prepare("SELECT * FROM classes WHERE user_id = ? ORDER BY class_name ASC");
@@ -25,14 +19,15 @@ $stmt->execute([$_SESSION['user_id']]);
 $classes = $stmt->fetchAll();
 
 // Filter classes
-$active_classes = [];
+$current_classes = [];
 $completed_classes = [];
 
 foreach ($classes as $class) {
-    if ($class['status'] == 'active') {
-        $active_classes[] = $class;
-    } else {
+    $status = $class['status'] ?? 'active';
+    if ($status === 'completed') {
         $completed_classes[] = $class;
+    } else {
+        $current_classes[] = $class;
     }
 }
 
@@ -58,7 +53,6 @@ $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Su
             color: #1a1a2e;
         }
 
-        /* ========== SIDEBAR ========== */
         .sidebar {
             position: fixed;
             left: 0;
@@ -175,18 +169,6 @@ $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Su
             background: #fef2f2;
         }
 
-        .dark-mode-link {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 16px;
-            color: #5a5a7a;
-            text-decoration: none;
-            font-size: 0.85rem;
-            margin-top: 10px;
-        }
-
-        /* ========== MAIN ========== */
         .main {
             margin-left: 260px;
             padding: 24px 32px;
@@ -277,14 +259,14 @@ $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Su
             cursor: pointer;
         }
 
-        .classes-list {
+        .tasks-list {
             background: white;
             border-radius: 20px;
             border: 1px solid #e8ecf2;
             overflow: hidden;
         }
 
-        .class-item {
+        .task-item {
             display: flex;
             align-items: center;
             gap: 16px;
@@ -293,38 +275,44 @@ $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Su
             transition: background 0.2s;
         }
 
-        .class-item:hover {
+        .task-item:hover {
             background: #fafbfd;
         }
 
-        .class-color {
-            width: 12px;
-            height: 50px;
+        .task-check {
+            width: 22px;
+            height: 22px;
             border-radius: 6px;
-        }
-
-        .class-icon {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
-            border-radius: 14px;
+            border: 2px solid #d1d5db;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            transition: all 0.2s;
         }
 
-        .class-info {
+        .task-check.completed {
+            background: #10b981;
+            border-color: #10b981;
+            color: white;
+        }
+
+        .task-info {
             flex: 1;
         }
 
-        .class-title {
+        .task-title {
             font-size: 1rem;
-            font-weight: 600;
+            font-weight: 500;
             margin-bottom: 6px;
         }
 
-        .class-meta {
+        .task-title.completed {
+            text-decoration: line-through;
+            color: #9ca3af;
+        }
+
+        .task-meta {
             display: flex;
             gap: 20px;
             flex-wrap: wrap;
@@ -332,7 +320,7 @@ $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Su
             color: #8b8aa8;
         }
 
-        .class-meta span {
+        .task-meta span {
             display: flex;
             align-items: center;
             gap: 4px;
@@ -347,17 +335,17 @@ $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Su
             font-weight: 500;
         }
 
-        .badge-completed {
-            background: #ecfdf5;
-            color: #10b981;
+        .badge-overdue {
+            background: #fef2f2;
+            color: #ef4444;
         }
 
-        .class-actions {
+        .task-actions {
             display: flex;
             gap: 8px;
         }
 
-        .class-actions button {
+        .task-actions button {
             background: none;
             border: none;
             cursor: pointer;
@@ -367,7 +355,7 @@ $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Su
             transition: background 0.2s;
         }
 
-        .class-actions button:hover {
+        .task-actions button:hover {
             background: #f0f2f9;
         }
 
@@ -410,7 +398,6 @@ $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Su
         <a href="focus-timer.php" class="s-link"><span class="s-ico"></span> Focus Timer</a>
     </nav>
    <div class="sidebar-bottom">
-        
         <a href="logout.php" class="logout-link"> Déconnexion</a>
     </div>
 </aside>
@@ -430,13 +417,13 @@ $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Su
     <h1 class="page-title"> Classes</h1>
 
     <div class="filter-tabs">
-        <div class="filter-tab active" onclick="filterClasses('active')">Active</div>
-        <div class="filter-tab" onclick="filterClasses('completed')">Completed</div>
+        <div class="filter-tab active" onclick="filterClasses(event, 'current')">Current</div>
+        <div class="filter-tab" onclick="filterClasses(event, 'completed')">Completed</div>
     </div>
 
     <div class="subject-selector">
-        <label> Filter by Subject:</label>
-        <select id="subjectFilter" onchange="filterClasses(currentFilter)">
+        <label> Select Subject:</label>
+        <select id="subjectFilter">
             <option value="all">All Subjects</option>
             <option value="Mathematics">Mathematics</option>
             <option value="Physics">Physics</option>
@@ -449,14 +436,13 @@ $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Su
         <a href="add-class.php" style="margin-left: auto; background:#667eea; color:white; padding:8px 20px; border-radius:10px; text-decoration:none; font-size:0.85rem;">+ Add Class</a>
     </div>
 
-    <div class="classes-list" id="classesList">
-        <!-- Classes will be loaded here -->
+    <div class="tasks-list" id="classesList">
     </div>
 </main>
 
 <script>
     let allClasses = <?php echo json_encode($classes); ?>;
-    let currentFilter = 'active';
+    let currentFilter = 'current';
     let currentSubject = 'all';
 
     function formatTime(time) {
@@ -465,15 +451,15 @@ $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Su
         return t[0] + ':' + t[1];
     }
 
-    function filterClasses(filter) {
+    function filterClasses(evt, filter) {
         currentFilter = filter;
         document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
-        event.target.classList.add('active');
+        evt.target.classList.add('active');
         renderClasses();
     }
 
     function renderClasses() {
-        let filteredClasses = currentFilter === 'active' ? 
+        let filteredClasses = currentFilter === 'current' ? 
             allClasses.filter(c => c.status !== 'completed') : 
             allClasses.filter(c => c.status === 'completed');
         
@@ -484,37 +470,41 @@ $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Su
         const container = document.getElementById('classesList');
         
         if (filteredClasses.length === 0) {
+            const message = currentFilter === 'current' ? 'No current classes found' : 'No completed classes found';
             container.innerHTML = `
                 <div class="empty-state">
                     <div class="empty-ico"></div>
-                    <p>No classes found</p>
+                    <p>${message}</p>
                     <a href="add-class.php" style="color:#667eea; text-decoration:none;">+ Add a class</a>
                 </div>
             `;
             return;
         }
         
-        container.innerHTML = filteredClasses.map(classItem => `
-            <div class="class-item" data-id="${classItem.id}">
-                <div class="class-color" style="background: ${classItem.color || '#667eea'};"></div>
-                <div class="class-icon"></div>
-                <div class="class-info">
-                    <div class="class-title">${escapeHtml(classItem.class_name)}</div>
-                    <div class="class-meta">
+        container.innerHTML = filteredClasses.map(classItem => {
+            const classStatus = classItem.status || 'active';
+            return `
+            <div class="task-item" data-id="${classItem.id}">
+                <div class="task-check ${classStatus === 'completed' ? 'completed' : ''}" onclick="toggleStatus(${classItem.id}, '${classStatus}')">
+                </div>
+                <div class="task-info">
+                    <div class="task-title ${classStatus === 'completed' ? 'completed' : ''}">${escapeHtml(classItem.class_name)}</div>
+                    <div class="task-meta">
                         <span> ${escapeHtml(classItem.subject)}</span>
-                        ${classItem.teacher ? `<span>‍ ${escapeHtml(classItem.teacher)}</span>` : ''}
+                        ${classItem.teacher ? `<span> ${escapeHtml(classItem.teacher)}</span>` : ''}
                         ${classItem.room ? `<span> ${escapeHtml(classItem.room)}</span>` : ''}
                         ${classItem.day_of_week ? `<span> ${escapeHtml(classItem.day_of_week)}</span>` : ''}
-                        ${classItem.start_time ? `<span>⏰ ${formatTime(classItem.start_time)}${classItem.end_time ? ' - ' + formatTime(classItem.end_time) : ''}</span>` : ''}
-                        <span class="badge ${classItem.status === 'completed' ? 'badge-completed' : ''}">${classItem.status === 'active' ? 'Active' : 'Completed'}</span>
+                        ${classItem.start_time ? `<span> ${formatTime(classItem.start_time)}${classItem.end_time ? ' - ' + formatTime(classItem.end_time) : ''}</span>` : ''}
+                        ${classStatus !== 'completed' ? '<span class="badge">Active</span>' : '<span class="badge">Completed</span>'}
                     </div>
                 </div>
-                <div class="class-actions">
+                <div class="task-actions">
                     <button onclick="editClass(${classItem.id})" title="Edit"></button>
                     <button onclick="deleteClass(${classItem.id})" title="Delete"></button>
                 </div>
             </div>
-        `).join('');
+            `;
+        }).join('');
     }
 
     function escapeHtml(str) {
@@ -522,18 +512,21 @@ $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Su
         return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
+    function toggleStatus(id, currentStatus) {
+        const newStatus = currentStatus === 'completed' ? 'active' : 'completed';
+        window.location.href = 'api/update-class-status.php?id=' + id + '&status=' + newStatus;
+    }
+
     function deleteClass(id) {
         if (confirm('Delete this class?')) {
-            fetch(`api/delete-class.php?id=${id}`, { method: 'DELETE' })
-            .then(() => location.reload());
+            window.location.href = 'api/delete-class.php?id=' + id;
         }
     }
 
     function editClass(id) {
-        window.location.href = `edit-class.php?id=${id}`;
+        window.location.href = 'edit-class.php?id=' + id;
     }
 
-    // Update subject filter
     document.getElementById('subjectFilter').addEventListener('change', function() {
         currentSubject = this.value;
         renderClasses();

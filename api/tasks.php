@@ -2,6 +2,40 @@
 require_once 'includes/config.php';
 requireLogin();
 
+if ($_SERVER['REQUEST_METHOD'] === 'PUT' || $_SERVER['REQUEST_METHOD'] === 'DELETE') {
+    $id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+    if (!$id) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Task id required']);
+        exit;
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
+        $body = json_decode(file_get_contents('php://input'), true);
+        $status = $body['status'] ?? null;
+        if (!in_array($status, ['pending', 'done'], true)) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Invalid status']);
+            exit;
+        }
+        $stmt = $pdo->prepare("UPDATE tasks SET status = ? WHERE id = ? AND user_id = ?");
+        $stmt->execute([$status, $id, $_SESSION['user_id']]);
+        echo json_encode(['success' => true]);
+        exit;
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+        $stmt = $pdo->prepare("DELETE FROM tasks WHERE id = ? AND user_id = ?");
+        $stmt->execute([$id, $_SESSION['user_id']]);
+        echo json_encode(['success' => true]);
+        exit;
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+    exit;
+}
+
 $tasks = getUserTasks($_SESSION['user_id']);
 
 // Filter tasks by status
@@ -479,9 +513,8 @@ foreach ($tasks as $task) {
     <div class="tasks-header">
         <h1> Tasks</h1>
         <div class="filter-tabs">
-            <div class="filter-tab active" onclick="filterTasks('current')">Current</div>
-            <div class="filter-tab" onclick="filterTasks('past')">Past</div>
-            <div class="filter-tab" onclick="filterTasks('overdue')">Overdue</div>
+            <div class="filter-tab active" onclick="filterTasks(event, 'current')">Current</div>
+            <div class="filter-tab" onclick="filterTasks(event, 'completed')">Completed</div>
         </div>
     </div>
 
@@ -532,10 +565,10 @@ foreach ($tasks as $task) {
         return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
     }
 
-    function filterTasks(filter) {
+    function filterTasks(evt, filter) {
         currentFilter = filter;
         document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
-        event.target.classList.add('active');
+        evt.target.classList.add('active');
         renderTasks();
     }
 
@@ -543,11 +576,9 @@ foreach ($tasks as $task) {
         let filteredTasks = [];
         
         if (currentFilter === 'current') {
-            filteredTasks = tasks.filter(t => t.status !== 'done' && t.due_date >= new Date().toISOString().split('T')[0]);
-        } else if (currentFilter === 'past') {
+            filteredTasks = tasks.filter(t => t.status !== 'done');
+        } else if (currentFilter === 'completed') {
             filteredTasks = tasks.filter(t => t.status === 'done');
-        } else if (currentFilter === 'overdue') {
-            filteredTasks = tasks.filter(t => t.status !== 'done' && t.due_date < new Date().toISOString().split('T')[0]);
         }
         
         if (currentSubject !== 'all') {
@@ -557,10 +588,11 @@ foreach ($tasks as $task) {
         const container = document.getElementById('tasksList');
         
         if (filteredTasks.length === 0) {
+            const message = currentFilter === 'current' ? 'No current tasks found' : 'No completed tasks found';
             container.innerHTML = `
                 <div class="empty-state">
                     <div class="empty-ico"></div>
-                    <p>No tasks found</p>
+                    <p>${message}</p>
                     <button class="add-task-btn" onclick="openAddTaskModal()">+ Add a task</button>
                 </div>
             `;

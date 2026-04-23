@@ -3,7 +3,6 @@ require_once 'includes/config.php';
 requireLogin();
 
 $error = '';
-$success = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = trim($_POST['title']);
@@ -14,16 +13,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     if (empty($title) || empty($start_date) || empty($end_date)) {
         $error = "Please fill all required fields.";
-    } elseif ($start_date > $end_date) {
-        $error = "Start date cannot be after end date.";
     } else {
-        $stmt = $pdo->prepare("INSERT INTO vacations (user_id, title, destination, start_date, end_date, description, status) VALUES (?, ?, ?, ?, ?, ?, 'upcoming')");
-        
-        if ($stmt->execute([$_SESSION['user_id'], $title, $destination, $start_date, $end_date, $description])) {
-            $success = "Vacation added successfully!";
-            echo "<script>setTimeout(function(){ window.location.href = 'vacations.php'; }, 1500);</script>";
+        // $start_date and $end_date are already in YYYY-MM-DD format from date input
+        if ($start_date > $end_date) {
+            $error = "Start date cannot be after end date.";
         } else {
-            $error = "Error adding vacation.";
+            $stmt = $pdo->prepare("INSERT INTO vacations (user_id, title, destination, start_date, end_date, description, status) VALUES (?, ?, ?, ?, ?, ?, 'upcoming')");
+            
+            if ($stmt->execute([$_SESSION['user_id'], $title, $destination, $start_date, $end_date, $description])) {
+                header("Location: vacations.php");
+                exit;
+            } else {
+                $error = "Error adding vacation.";
+            }
         }
     }
 }
@@ -384,10 +386,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="alert alert-error"><?php echo $error; ?></div>
         <?php endif; ?>
 
-        <?php if ($success): ?>
-            <div class="alert alert-success"><?php echo $success; ?></div>
-        <?php endif; ?>
-
         <form method="POST" action="">
             <div class="form-group">
                 <label>Vacation Title <span class="required">*</span></label>
@@ -399,14 +397,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type="text" name="destination" placeholder="e.g., Paris, Barcelona, Beach">
             </div>
 
-            <div class="form-row">
+<div class="form-row">
                 <div class="form-group">
                     <label>Start Date <span class="required">*</span></label>
-                    <input type="date" name="start_date" required>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <input type="date" id="start_date" name="start_date" required onchange="updateStartDateDisplay()">
+                        <span id="start_date_display" style="color:#8b8aa8; font-size:0.85rem;"></span>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>End Date <span class="required">*</span></label>
-                    <input type="date" name="end_date" required>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <input type="date" id="end_date" name="end_date" required onchange="updateEndDateDisplay()">
+                        <span id="end_date_display" style="color:#8b8aa8; font-size:0.85rem;"></span>
+                    </div>
                 </div>
             </div>
 
@@ -442,8 +446,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     const today = new Date();
     const nextWeek = new Date();
     nextWeek.setDate(today.getDate() + 7);
-    document.querySelector('input[name="start_date"]').value = today.toISOString().split('T')[0];
-    document.querySelector('input[name="end_date"]').value = nextWeek.toISOString().split('T')[0];
+
+    function formatDateYMD(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return year + '-' + month + '-' + day;
+    }
+
+    function formatDateDMY(date) {
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return day + '/' + month + '/' + year;
+    }
+
+    function updateStartDateDisplay() {
+        const dateVal = document.getElementById('start_date').value;
+        if (dateVal) {
+            const date = new Date(dateVal + 'T00:00:00');
+            document.getElementById('start_date_display').textContent = formatDateDMY(date);
+        }
+    }
+
+    function updateEndDateDisplay() {
+        const dateVal = document.getElementById('end_date').value;
+        if (dateVal) {
+            const date = new Date(dateVal + 'T00:00:00');
+            document.getElementById('end_date_display').textContent = formatDateDMY(date);
+        }
+    }
+
+    // Set default values
+    document.getElementById('start_date').value = formatDateYMD(today);
+    document.getElementById('end_date').value = formatDateYMD(nextWeek);
+    updateStartDateDisplay();
+    updateEndDateDisplay();
 </script>
 
 </body>

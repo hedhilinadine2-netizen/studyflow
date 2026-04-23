@@ -2,40 +2,23 @@
 require_once 'includes/config.php';
 requireLogin();
 
-// Create vacations table if not exists
-$pdo->exec("CREATE TABLE IF NOT EXISTS vacations (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    title VARCHAR(255) NOT NULL,
-    destination VARCHAR(255),
-    start_date DATE NOT NULL,
-    end_date DATE NOT NULL,
-    description TEXT,
-    status ENUM('upcoming', 'ongoing', 'completed') DEFAULT 'upcoming',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-)");
+// Ensure vacations table has status column
+try {
+    $pdo->exec("ALTER TABLE vacations ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT 'upcoming'");
+} catch (Exception $e) {
+    try {
+        $pdo->exec("ALTER TABLE vacations ADD COLUMN status VARCHAR(50) DEFAULT 'upcoming'");
+    } catch (Exception $e2) {
+        // Column might already exist
+    }
+}
 
 // Fetch vacations
 $stmt = $pdo->prepare("SELECT * FROM vacations WHERE user_id = ? ORDER BY start_date ASC");
 $stmt->execute([$_SESSION['user_id']]);
 $vacations = $stmt->fetchAll();
 
-// Filter vacations
-$upcoming_vacations = [];
-$ongoing_vacations = [];
-$completed_vacations = [];
 $today = date('Y-m-d');
-
-foreach ($vacations as $vacation) {
-    if ($vacation['end_date'] < $today) {
-        $completed_vacations[] = $vacation;
-    } elseif ($vacation['start_date'] <= $today && $vacation['end_date'] >= $today) {
-        $ongoing_vacations[] = $vacation;
-    } else {
-        $upcoming_vacations[] = $vacation;
-    }
-}
 ?>
 
 <!DOCTYPE html>
@@ -57,7 +40,6 @@ foreach ($vacations as $vacation) {
             color: #1a1a2e;
         }
 
-        /* ========== SIDEBAR ========== */
         .sidebar {
             position: fixed;
             left: 0;
@@ -174,18 +156,6 @@ foreach ($vacations as $vacation) {
             background: #fef2f2;
         }
 
-        .dark-mode-link {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 16px;
-            color: #5a5a7a;
-            text-decoration: none;
-            font-size: 0.85rem;
-            margin-top: 10px;
-        }
-
-        /* ========== MAIN ========== */
         .main {
             margin-left: 260px;
             padding: 24px 32px;
@@ -249,14 +219,41 @@ foreach ($vacations as $vacation) {
             border-color: #667eea;
         }
 
-        .vacations-list {
+        .subject-selector {
+            background: white;
+            border: 1px solid #e8ecf2;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .subject-selector label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #5a5a7a;
+        }
+
+        .subject-selector select {
+            padding: 8px 12px;
+            border: 1px solid #e8ecf2;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            background: white;
+            cursor: pointer;
+        }
+
+        .tasks-list {
             background: white;
             border-radius: 20px;
             border: 1px solid #e8ecf2;
             overflow: hidden;
         }
 
-        .vacation-item {
+        .task-item {
             display: flex;
             align-items: center;
             gap: 16px;
@@ -265,32 +262,44 @@ foreach ($vacations as $vacation) {
             transition: background 0.2s;
         }
 
-        .vacation-item:hover {
+        .task-item:hover {
             background: #fafbfd;
         }
 
-        .vacation-icon {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
-            border-radius: 14px;
+        .task-check {
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            border: 2px solid #d1d5db;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            transition: all 0.2s;
         }
 
-        .vacation-info {
+        .task-check.completed {
+            background: #10b981;
+            border-color: #10b981;
+            color: white;
+        }
+
+        .task-info {
             flex: 1;
         }
 
-        .vacation-title {
+        .task-title {
             font-size: 1rem;
-            font-weight: 600;
+            font-weight: 500;
             margin-bottom: 6px;
         }
 
-        .vacation-meta {
+        .task-title.completed {
+            text-decoration: line-through;
+            color: #9ca3af;
+        }
+
+        .task-meta {
             display: flex;
             gap: 20px;
             flex-wrap: wrap;
@@ -298,40 +307,32 @@ foreach ($vacations as $vacation) {
             color: #8b8aa8;
         }
 
-        .vacation-meta span {
+        .task-meta span {
             display: flex;
             align-items: center;
             gap: 4px;
         }
 
         .badge {
+            background: #e0e7ff;
+            color: #4f46e5;
             padding: 4px 10px;
             border-radius: 20px;
             font-size: 0.7rem;
             font-weight: 500;
         }
 
-        .badge-upcoming {
-            background: #e0e7ff;
-            color: #4f46e5;
+        .badge-overdue {
+            background: #fef2f2;
+            color: #ef4444;
         }
 
-        .badge-ongoing {
-            background: #fef3c7;
-            color: #d97706;
-        }
-
-        .badge-completed {
-            background: #ecfdf5;
-            color: #10b981;
-        }
-
-        .vacation-actions {
+        .task-actions {
             display: flex;
             gap: 8px;
         }
 
-        .vacation-actions button {
+        .task-actions button {
             background: none;
             border: none;
             cursor: pointer;
@@ -341,7 +342,7 @@ foreach ($vacations as $vacation) {
             transition: background 0.2s;
         }
 
-        .vacation-actions button:hover {
+        .task-actions button:hover {
             background: #f0f2f9;
         }
 
@@ -384,7 +385,6 @@ foreach ($vacations as $vacation) {
         <a href="focus-timer.php" class="s-link"><span class="s-ico"></span> Focus Timer</a>
     </nav>
    <div class="sidebar-bottom">
-        
         <a href="logout.php" class="logout-link"> Déconnexion</a>
     </div>
 </aside>
@@ -404,19 +404,21 @@ foreach ($vacations as $vacation) {
     <h1 class="page-title"> Vacations</h1>
 
     <div class="filter-tabs">
-        <div class="filter-tab active" onclick="filterVacations('upcoming')">Upcoming</div>
-        <div class="filter-tab" onclick="filterVacations('ongoing')">Ongoing</div>
-        <div class="filter-tab" onclick="filterVacations('completed')">Completed</div>
+        <div class="filter-tab active" onclick="filterVacations(event, 'current')">Current</div>
+        <div class="filter-tab" onclick="filterVacations(event, 'completed')">Completed</div>
     </div>
 
-    <div class="vacations-list" id="vacationsList">
-        <!-- Vacations will be loaded here -->
+    <div class="subject-selector">
+        <a href="add-vacation.php" style="margin-left: auto; background:#667eea; color:white; padding:8px 20px; border-radius:10px; text-decoration:none; font-size:0.85rem;">+ Add Vacation</a>
+    </div>
+
+    <div class="tasks-list" id="vacationsList">
     </div>
 </main>
 
 <script>
     let allVacations = <?php echo json_encode($vacations); ?>;
-    let currentFilter = 'upcoming';
+    let currentFilter = 'current';
     let today = '<?php echo $today; ?>';
 
     function formatDate(date) {
@@ -431,23 +433,22 @@ foreach ($vacations as $vacation) {
         return 'upcoming';
     }
 
-    function filterVacations(filter) {
+    function filterVacations(evt, filter) {
         currentFilter = filter;
         document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
-        event.target.classList.add('active');
+        evt.target.classList.add('active');
         renderVacations();
     }
 
     function renderVacations() {
-        let filteredVacations = allVacations.filter(v => getVacationStatus(v) === currentFilter);
+        let filteredVacations = currentFilter === 'current' ? 
+            allVacations.filter(v => getVacationStatus(v) !== 'completed') : 
+            allVacations.filter(v => getVacationStatus(v) === 'completed');
         
         const container = document.getElementById('vacationsList');
         
         if (filteredVacations.length === 0) {
-            let message = '';
-            if (currentFilter === 'upcoming') message = 'No upcoming vacations planned';
-            else if (currentFilter === 'ongoing') message = 'No ongoing vacations';
-            else message = 'No completed vacations';
+            let message = currentFilter === 'current' ? 'No current vacations found' : 'No completed vacations found';
             
             container.innerHTML = `
                 <div class="empty-state">
@@ -465,29 +466,30 @@ foreach ($vacations as $vacation) {
             const status = getVacationStatus(vacation);
             
             if (status === 'upcoming') {
-                badgeClass = 'badge-upcoming';
+                badgeClass = 'badge';
                 badgeText = 'Upcoming';
             } else if (status === 'ongoing') {
-                badgeClass = 'badge-ongoing';
-                badgeText = '🟢 Ongoing';
+                badgeClass = 'badge';
+                badgeText = 'Ongoing';
             } else {
-                badgeClass = 'badge-completed';
-                badgeText = 'Completed ';
+                badgeClass = 'badge';
+                badgeText = 'Completed';
             }
             
             return `
-            <div class="vacation-item" data-id="${vacation.id}">
-                <div class="vacation-icon"></div>
-                <div class="vacation-info">
-                    <div class="vacation-title">${escapeHtml(vacation.title)}</div>
-                    <div class="vacation-meta">
-                        <span> ${formatDate(vacation.start_date)}  ${formatDate(vacation.end_date)}</span>
+            <div class="task-item" data-id="${vacation.id}">
+                <div class="task-check ${status === 'completed' ? 'completed' : ''}" onclick="toggleStatus(${vacation.id}, '${status}')">
+                </div>
+                <div class="task-info">
+                    <div class="task-title ${status === 'completed' ? 'completed' : ''}">${escapeHtml(vacation.title)}</div>
+                    <div class="task-meta">
+                        <span> ${formatDate(vacation.start_date)} - ${formatDate(vacation.end_date)}</span>
                         ${vacation.destination ? `<span> ${escapeHtml(vacation.destination)}</span>` : ''}
-                        <span class="badge ${badgeClass}">${badgeText}</span>
+                        <span class="${badgeClass}">${badgeText}</span>
                     </div>
                     ${vacation.description ? `<div style="font-size:0.7rem; color:#8b8aa8; margin-top:6px;">${escapeHtml(vacation.description)}</div>` : ''}
                 </div>
-                <div class="vacation-actions">
+                <div class="task-actions">
                     <button onclick="editVacation(${vacation.id})" title="Edit"></button>
                     <button onclick="deleteVacation(${vacation.id})" title="Delete"></button>
                 </div>
@@ -501,15 +503,19 @@ foreach ($vacations as $vacation) {
         return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
+    function toggleStatus(id, currentStatus) {
+        const newStatus = currentStatus === 'completed' ? 'upcoming' : 'completed';
+        window.location.href = 'api/update-vacation-status.php?id=' + id + '&status=' + newStatus;
+    }
+
     function deleteVacation(id) {
         if (confirm('Delete this vacation?')) {
-            fetch(`api/delete-vacation.php?id=${id}`, { method: 'DELETE' })
-            .then(() => location.reload());
+            window.location.href = 'api/delete-vacation.php?id=' + id;
         }
     }
 
     function editVacation(id) {
-        window.location.href = `edit-vacation.php?id=${id}`;
+        window.location.href = 'edit-vacation.php?id=' + id;
     }
 
     function updateClock() {
