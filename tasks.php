@@ -547,6 +547,12 @@ foreach ($tasks as $task) {
     updateClock();
     setInterval(updateClock, 60000);
     renderTasks();
+
+    // Add event listener for subject filter
+    document.getElementById('subjectFilter').addEventListener('change', function() {
+        currentSubject = this.value;
+        renderTasks();
+    });
 </script>
 
 </body>

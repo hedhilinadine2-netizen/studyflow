@@ -537,11 +537,6 @@ function toggleStatus(id, currentStatus) {
         window.location.href = 'edit-exam.php?id=' + id;
     }
 
-    document.getElementById('subjectFilter').addEventListener('change', function() {
-        currentSubject = this.value;
-        renderExams();
-    });
-
     function updateClock() {
         const now = new Date();
         const hours = String(now.getHours()).padStart(2, '0');
@@ -556,6 +551,12 @@ function toggleStatus(id, currentStatus) {
     updateClock();
     setInterval(updateClock, 60000);
     renderExams();
+
+    // Add event listener for subject filter
+    document.getElementById('subjectFilter').addEventListener('change', function() {
+        currentSubject = this.value;
+        renderExams();
+    });
 </script>
 
 </body>

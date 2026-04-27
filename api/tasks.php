@@ -522,10 +522,10 @@ foreach ($tasks as $task) {
         <label> Select Subject:</label>
         <select id="subjectFilter">
             <option value="all">All Subjects</option>
-            <option value="math">Mathematics</option>
-            <option value="php">PHP</option>
-            <option value="web">Web Development</option>
-            <option value="database">Database</option>
+            <option value="Mathematics">Mathematics</option>
+            <option value="PHP">PHP</option>
+            <option value="Web Development">Web Development</option>
+            <option value="Database">Database</option>
         </select>
         <button class="add-task-btn" onclick="openAddTaskModal()">+ Add Task</button>
     </div>
@@ -582,7 +582,7 @@ foreach ($tasks as $task) {
         }
         
         if (currentSubject !== 'all') {
-            // filter by subject if needed
+            filteredTasks = filteredTasks.filter(t => t.subject === currentSubject);
         }
         
         const container = document.getElementById('tasksList');
@@ -701,6 +701,12 @@ foreach ($tasks as $task) {
     updateClock();
     setInterval(updateClock, 60000);
     renderTasks();
+
+    // Add event listener for subject filter
+    document.getElementById('subjectFilter').addEventListener('change', function() {
+        currentSubject = this.value;
+        renderTasks();
+    });
 </script>
 
 </body>

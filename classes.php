@@ -527,11 +527,6 @@ $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Su
         window.location.href = 'edit-class.php?id=' + id;
     }
 
-    document.getElementById('subjectFilter').addEventListener('change', function() {
-        currentSubject = this.value;
-        renderClasses();
-    });
-
     function updateClock() {
         const now = new Date();
         const hours = String(now.getHours()).padStart(2, '0');
@@ -546,6 +541,12 @@ $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Su
     updateClock();
     setInterval(updateClock, 60000);
     renderClasses();
+
+    // Add event listener for subject filter
+    document.getElementById('subjectFilter').addEventListener('change', function() {
+        currentSubject = this.value;
+        renderClasses();
+    });
 </script>
 
 </body>
