@@ -2,17 +2,63 @@
 require_once 'includes/config.php';
 requireLogin();
 
-// Ensure exams table has status column
-try {
-    $pdo->exec("ALTER TABLE exams ADD COLUMN status VARCHAR(50) DEFAULT 'current'");
-} catch (Exception $e) {
-    // Column might already exist
+function ensureExamsTable(PDO $pdo) {
+    try {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS exams (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT NOT NULL,
+            exam_name VARCHAR(255) NOT NULL,
+            exam_type VARCHAR(100) DEFAULT 'Exam',
+            subject VARCHAR(255) NOT NULL,
+            mode VARCHAR(100) DEFAULT 'In Person',
+            seat VARCHAR(50),
+            room VARCHAR(100),
+            exam_date DATE NOT NULL,
+            exam_time TIME,
+            duration INT,
+            status VARCHAR(50) DEFAULT 'current',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        )");
+    } catch (Exception $e) {
+        // ignore, table may exist or creation may fail if corrupt
+    }
+
+    try {
+        $pdo->exec("ALTER TABLE exams ADD COLUMN status VARCHAR(50) DEFAULT 'current'");
+    } catch (Exception $e) {
+        // ignore if column exists or table is corrupt
+    }
 }
 
+function repairExamsTable(PDO $pdo) {
+    try {
+        $pdo->exec('SET FOREIGN_KEY_CHECKS=0');
+        $pdo->exec('DROP TABLE IF EXISTS exams');
+        $pdo->exec('SET FOREIGN_KEY_CHECKS=1');
+    } catch (Exception $e) {
+        // ignore drop errors, attempt recreate anyway
+    }
+    ensureExamsTable($pdo);
+}
+
+ensureExamsTable($pdo);
+
 // Fetch exams
-$stmt = $pdo->prepare("SELECT * FROM exams WHERE user_id = ? ORDER BY exam_date ASC");
-$stmt->execute([$_SESSION['user_id']]);
-$exams = $stmt->fetchAll();
+try {
+    $stmt = $pdo->prepare("SELECT * FROM exams WHERE user_id = ? ORDER BY exam_date ASC");
+    $stmt->execute([$_SESSION['user_id']]);
+    $exams = $stmt->fetchAll();
+} catch (PDOException $e) {
+    if (strpos($e->getMessage(), "doesn't exist in engine") !== false || strpos($e->getMessage(), '1932') !== false) {
+        repairExamsTable($pdo);
+        $stmt = $pdo->prepare("SELECT * FROM exams WHERE user_id = ? ORDER BY exam_date ASC");
+        $stmt->execute([$_SESSION['user_id']]);
+        $exams = $stmt->fetchAll();
+    } else {
+        throw $e;
+    }
+}
 
 // Filter exams
 $current_exams = [];

@@ -317,29 +317,23 @@ requireLogin();
             padding: 10px 0;
         }
 
-        .checklist-check {
-            width: 20px;
-            height: 20px;
-            border-radius: 6px;
-            border: 2px solid #d1d5db;
-            background: white;
+        .checklist-checkbox {
+            width: 18px;
+            height: 18px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            color: white;
-        }
-
-        .checklist-check.completed {
-            background: #10b981;
-            border-color: #10b981;
+            accent-color: #10b981;
+            flex-shrink: 0;
         }
 
         .checklist-text {
             flex: 1;
             font-size: 0.85rem;
             color: #1a1a2e;
+        }
+
+        .checklist-text.completed {
+            text-decoration: line-through;
+            color: #9ca3af;
         }
 
         .checklist-text.completed {
@@ -524,15 +518,16 @@ requireLogin();
             return;
         }
         
-        container.innerHTML = tasks.map((task, index) => `
+        container.innerHTML = tasks.map((task, index) => {
+            const id = `check-${index}`;
+            return `
             <div class="checklist-item">
-                <div class="checklist-check ${task.completed ? 'completed' : ''}" onclick="toggleTask(${index})">
-                    ${task.completed ? '' : ''}
-                </div>
-                <div class="checklist-text ${task.completed ? 'completed' : ''}">${escapeHtml(task.text)}</div>
+                <input id="${id}" type="checkbox" class="checklist-checkbox" onchange="toggleTask(${index})" ${task.completed ? 'checked' : ''}>
+                <label for="${id}" class="checklist-text ${task.completed ? 'completed' : ''}">${escapeHtml(task.text)}</label>
                 <button class="delete-item" onclick="deleteTask(${index})"></button>
             </div>
-        `).join('');
+        `;
+        }).join('');
     }
 
     function showAddInput() {

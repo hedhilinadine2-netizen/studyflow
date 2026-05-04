@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             // Insert with explicit column list matching values
             $sql = "INSERT INTO exams (user_id, exam_name, exam_type, subject, mode, seat, room, exam_date, exam_time, duration, status) 
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'current')";
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
                 $_SESSION['user_id'],
@@ -65,7 +65,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $room,
                 $date,
                 $time,
-                $duration
+                $duration,
+                'current'
             ]);
             header("Location: exams.php");
             exit;

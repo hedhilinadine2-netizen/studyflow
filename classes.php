@@ -483,8 +483,9 @@ $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Su
         
         container.innerHTML = filteredClasses.map(classItem => {
             const classStatus = classItem.status || 'active';
+            const colorStyle = classItem.color ? `border-left: 4px solid ${classItem.color};` : '';
             return `
-            <div class="task-item" data-id="${classItem.id}">
+            <div class="task-item" data-id="${classItem.id}" style="${colorStyle}">
                 <div class="task-check ${classStatus === 'completed' ? 'completed' : ''}" onclick="toggleStatus(${classItem.id}, '${classStatus}')">
                 </div>
                 <div class="task-info">
